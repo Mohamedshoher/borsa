@@ -103,7 +103,7 @@ export interface Withdrawal {
   partner_id: string;
   portfolio_id: string;
   transaction_id: string;
-  request_id: string | null;
+  request_id?: string | null;
   amount: number;
   withdrawal_date: string;
   withdrawal_time: string;
@@ -149,7 +149,7 @@ export interface PortfolioValuation {
   valuation_date: string;
   valuation_time: string;
   valuation_type: 'PROFIT' | 'LOSS' | 'MANUAL_REVAL';
-  reason: string | null;
+  reason?: string | null;
   notes: string | null;
   created_by: string;
   created_by_name?: string;
@@ -185,7 +185,7 @@ export interface AuditLog {
   user_name: string;
   user_role: string;
   action: 'CREATE' | 'UPDATE' | 'DELETE' | 'LOGIN' | 'CALCULATE' | 'APPROVE' | 'REJECT' | 'REVERSE';
-  entity_type: 'partner' | 'portfolio' | 'transaction' | 'withdrawal_request' | 'fee' | 'settings' | 'auth';
+  entity_type: 'partner' | 'portfolio' | 'transaction' | 'withdrawal_request' | 'fee' | 'settings' | 'auth' | 'system';
   entity_id: string | null;
   old_data: any;
   new_data: any;
