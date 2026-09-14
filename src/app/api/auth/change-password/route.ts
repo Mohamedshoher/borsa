@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Verify current password if provided
-    if (current_password && !verifyPassword(current_password, user.password_hash)) {
+    if (current_password && !verifyPassword(current_password, user.password_hash || '')) {
       return NextResponse.json({ error: 'كلمة المرور الحالية غير صحيحة' }, { status: 400 });
     }
 

@@ -1,11 +1,26 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { AppProvider } from '@/context/AppContext';
 import ToastContainer from '@/components/Toast';
 
+export const viewport: Viewport = {
+  themeColor: '#059669',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export const metadata: Metadata = {
   title: 'منصة إدارة محافظ الشركاء في البورصة | مركز الشاطبي',
   description: 'نظام مالي وإداري متكامل لإدارة محافظ الشركاء المستثمرين في البورصة وحساب الأرباح والخسائر وأتعاب الإدارة',
+  manifest: '/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'محافظ الشاطبي',
+  },
+  applicationName: 'منصة الشاطبي للمحافظ',
 };
 
 export default function RootLayout({
