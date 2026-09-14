@@ -72,18 +72,18 @@ export default function WithdrawalRequestModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden my-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="relative w-full max-w-lg max-h-[92vh] flex flex-col bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden my-auto">
         {/* Header */}
-        <div className="px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-700 text-white flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="px-4 py-3 sm:px-6 sm:py-4 bg-gradient-to-r from-blue-600 to-indigo-700 text-white flex items-center justify-between flex-shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             <div className="p-2 rounded-xl bg-white/10 backdrop-blur-sm">
               <Send className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 className="text-base font-bold">تقديم طلب سحب مالي من المحفظة</h2>
-              <p className="text-xs text-blue-100 mt-0.5">
-                يتم إرسال الطلب للمدير للمراجعة واعتماد التحويل المالي
+              <h2 className="text-sm sm:text-base font-bold">تقديم طلب سحب مالي</h2>
+              <p className="text-[11px] sm:text-xs text-blue-100 mt-0.5">
+                إرسال طلب السحب للمدير للاعتماد
               </p>
             </div>
           </div>
@@ -95,8 +95,8 @@ export default function WithdrawalRequestModal({
           </button>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        {/* Form Body with Internal Smooth Scrolling */}
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
           {/* Available balance card */}
           <div className="p-4 rounded-2xl bg-blue-50/80 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 flex items-center justify-between">
             <div>

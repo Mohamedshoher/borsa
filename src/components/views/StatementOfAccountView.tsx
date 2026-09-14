@@ -175,9 +175,9 @@ export default function StatementOfAccountView() {
       </div>
 
       {/* Printable Statement Document Card */}
-      <div className="p-8 rounded-3xl bg-white text-slate-900 shadow-xl border border-slate-200 print-card">
+      <div className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-white text-slate-900 shadow-xl border border-slate-200 print-card overflow-hidden">
         {/* Statement Header */}
-        <div className="flex items-start justify-between border-b-2 border-slate-900 pb-6 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 border-b-2 border-slate-900 pb-6 mb-6">
           <div>
             <div className="flex items-center gap-2">
               <Building className="w-6 h-6 text-emerald-700" />
@@ -186,7 +186,7 @@ export default function StatementOfAccountView() {
               </h2>
             </div>
             <p className="text-xs text-slate-600 mt-1 font-semibold">
-              مدير الاستثمار: {systemSettings?.manager_name || 'محمد مصطفى شكر'}
+              مدير الاستثمار: {systemSettings?.manager_name || 'مدير الاستثمار'}
             </p>
             <p className="text-xs text-slate-500">
               تاريخ استخراج الكشف: {formatDate(new Date().toISOString())}

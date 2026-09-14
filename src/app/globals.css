@@ -9,12 +9,18 @@
   --font-tajawal: 'Tajawal', sans-serif;
 }
 
+html {
+  -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: var(--font-cairo);
   direction: rtl;
   text-align: right;
   background-color: #f8fafc;
   color: #0f172a;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

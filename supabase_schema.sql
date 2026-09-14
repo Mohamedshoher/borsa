@@ -202,7 +202,7 @@ CREATE TABLE IF NOT EXISTS notifications (
 CREATE TABLE IF NOT EXISTS system_settings (
     id TEXT PRIMARY KEY DEFAULT 'default',
     system_name TEXT NOT NULL DEFAULT 'منصة إدارة محافظ الشركاء - مركز الشاطبي',
-    manager_name TEXT NOT NULL DEFAULT 'محمد مصطفى شكر (مدير الاستثمار)',
+    manager_name TEXT NOT NULL DEFAULT 'مدير الاستثمار',
     currency TEXT NOT NULL DEFAULT 'EGP',
     currency_symbol TEXT NOT NULL DEFAULT 'ج.م',
     default_mgmt_fee_rate NUMERIC(5,2) NOT NULL DEFAULT 2.00,
@@ -229,12 +229,12 @@ CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id, is_r
 
 -- إعدادات النظام
 INSERT INTO system_settings (id, system_name, manager_name, currency, currency_symbol, default_mgmt_fee_rate, mgmt_fee_basis, accounting_month_start_day, notifications_enabled)
-VALUES ('default', 'منصة إدارة محافظ الشركاء - مركز الشاطبي', 'محمد مصطفى شكر (مدير الاستثمار)', 'EGP', 'ج.م', 2.00, 'VALUATION', 1, true)
+VALUES ('default', 'منصة إدارة محافظ الشركاء - مركز الشاطبي', 'مدير الاستثمار', 'EGP', 'ج.م', 2.00, 'VALUATION', 1, true)
 ON CONFLICT (id) DO NOTHING;
 
 -- حساب المدير العام
 INSERT INTO users (id, username, password_hash, full_name, role, partner_id, status, created_at)
-VALUES ('usr_admin_01', 'admin', 'hash_admin123', 'محمد مصطفى شكر (المدير)', 'admin', NULL, 'active', NOW())
+VALUES ('usr_admin_01', 'admin', 'hash_admin123', 'المدير العام', 'admin', NULL, 'active', NOW())
 ON CONFLICT (id) DO NOTHING;
 
 -- شريك 1: أحمد محمود الشناوي

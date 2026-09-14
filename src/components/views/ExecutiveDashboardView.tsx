@@ -139,42 +139,43 @@ export default function ExecutiveDashboardView({
 
   return (
     <div className="space-y-6 pb-12 animate-in fade-in duration-300">
-      {/* Top Banner / Welcome & Quick Actions */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-l from-slate-900 via-slate-850 to-slate-900 border border-slate-800 p-6 text-white shadow-xl">
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      {/* Top Banner / Welcome & Quick Actions (3 Clean Lines on Mobile) */}
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-l from-slate-900 via-slate-850 to-slate-900 border border-slate-800 p-4 sm:p-6 text-white shadow-xl">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4">
           <div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 mb-2">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>لوحة الإدارة التنفيذية الموحدة</span>
-            </span>
-            <h1 className="text-xl sm:text-2xl font-black">نظام إدارة ومتابعة محافظ الشركاء في البورصة</h1>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-2xl leading-relaxed">
-              متابعة دقيقة للأموال المستثمرة، تقييمات الأسهم، الأرباح والخسائر، أتعاب الإدارة (2%)، وحركات السحب والإيداع.
-            </p>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                <ShieldCheck className="w-3 h-3" />
+                <span>لوحة الإدارة التنفيذية</span>
+              </span>
+            </div>
+            <h1 className="text-base sm:text-2xl font-black text-white leading-tight">
+              إدارة ومتابعة محافظ الشركاء في البورصة
+            </h1>
           </div>
 
-          {/* Quick Action Buttons */}
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          {/* Quick Action Buttons (Balanced 3-column grid on mobile) */}
+          <div className="grid grid-cols-3 gap-2 w-full sm:w-auto sm:flex sm:items-center">
             <button
               onClick={openAddPartnerModal}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg shadow-emerald-950/40 transition-all active:scale-95"
+              className="flex items-center justify-center gap-1.5 py-2 px-2 sm:px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] sm:text-xs font-bold shadow-md shadow-emerald-950/40 transition-all active:scale-95 text-center"
             >
-              <PlusCircle className="w-4 h-4" />
-              <span>إضافة شريك</span>
+              <PlusCircle className="w-3.5 h-3.5" />
+              <span className="truncate">إضافة شريك</span>
             </button>
             <button
               onClick={openValuationModal}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-100 text-xs font-bold border border-slate-700 transition-all active:scale-95"
+              className="flex items-center justify-center gap-1.5 py-2 px-2 sm:px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 text-[11px] sm:text-xs font-bold border border-slate-700 transition-all active:scale-95 text-center"
             >
-              <Calculator className="w-4 h-4 text-emerald-400" />
-              <span>تحديث التقييم</span>
+              <Calculator className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="truncate">تحديث التقييم</span>
             </button>
             <button
               onClick={openFeeModal}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-purple-900/60 hover:bg-purple-800/80 text-purple-200 text-xs font-bold border border-purple-700/60 transition-all active:scale-95"
+              className="flex items-center justify-center gap-1.5 py-2 px-2 sm:px-4 rounded-xl bg-purple-900/80 hover:bg-purple-800 text-purple-200 text-[11px] sm:text-xs font-bold border border-purple-700/60 transition-all active:scale-95 text-center"
             >
-              <Percent className="w-4 h-4 text-purple-400" />
-              <span>احتساب الأتعاب (2%)</span>
+              <Percent className="w-3.5 h-3.5 text-purple-400" />
+              <span className="truncate">احتساب الأتعاب</span>
             </button>
           </div>
         </div>

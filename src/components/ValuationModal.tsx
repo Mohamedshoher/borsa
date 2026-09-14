@@ -131,18 +131,18 @@ export default function ValuationModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden my-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="relative w-full max-w-lg max-h-[92vh] flex flex-col bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden my-auto">
         {/* Header */}
-        <div className="px-6 py-4 bg-gradient-to-r from-emerald-600 to-teal-700 text-white flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="px-4 py-3 sm:px-6 sm:py-4 bg-gradient-to-r from-emerald-600 to-teal-700 text-white flex items-center justify-between flex-shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             <div className="p-2 rounded-xl bg-white/10 backdrop-blur-sm">
               <Calculator className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 className="text-base font-bold">تحديث تقييم المحفظة (بالقيمة أو النسبة %)</h2>
-              <p className="text-xs text-emerald-100 mt-0.5">
-                يمكنك إدخال نسبة التغير % ليتم احتساب القيمة السوقية تلقائياً أو العكس
+              <h2 className="text-sm sm:text-base font-bold">تحديث تقييم المحفظة (بالقيمة أو النسبة)</h2>
+              <p className="text-[11px] sm:text-xs text-emerald-100 mt-0.5">
+                إدخال نسبة التغير أو القيمة السوقية الجديدة
               </p>
             </div>
           </div>
@@ -154,8 +154,8 @@ export default function ValuationModal({
           </button>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        {/* Form Body with Internal Smooth Scrolling */}
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
               اختر الشريك *

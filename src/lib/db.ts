@@ -92,7 +92,7 @@ function createInitialDatabase(): DatabaseSchema {
 
   const settings: SystemSettings = {
     system_name: 'منصة إدارة محافظ الشركاء - مركز الشاطبي',
-    manager_name: 'محمد مصطفى شكر (مدير الاستثمار)',
+    manager_name: 'مدير الاستثمار',
     currency: 'EGP',
     currency_symbol: 'ج.م',
     default_mgmt_fee_rate: 2.0,
@@ -105,7 +105,7 @@ function createInitialDatabase(): DatabaseSchema {
     id: 'usr_admin_01',
     username: 'admin',
     password_hash: 'hash_admin123',
-    full_name: 'محمد مصطفى شكر (المدير)',
+    full_name: 'المدير العام',
     role: 'admin',
     partner_id: null,
     status: 'active',

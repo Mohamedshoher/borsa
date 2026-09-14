@@ -113,34 +113,33 @@ export default function PartnerPortalView({ openWithdrawalReqModal }: PartnerPor
 
   return (
     <div className="space-y-6 pb-12 animate-in fade-in duration-300">
-      {/* Top Welcome Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-l from-emerald-950 via-slate-900 to-slate-900 border border-emerald-800/40 p-6 text-white shadow-xl">
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      {/* Top Welcome Header (3 Clean Lines on Mobile) */}
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-l from-emerald-950 via-slate-900 to-slate-900 border border-emerald-800/40 p-4 sm:p-6 text-white shadow-xl">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4">
           <div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mb-2">
-              <Wallet className="w-3.5 h-3.5" />
-              <span>محفظتك الاستثمارية المستقلة</span>
-            </span>
-            <h1 className="text-xl sm:text-2xl font-black">مرحباً، {partner?.full_name}</h1>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1">
-              تاريخ بداية الاستثمار: {formatDate(partner?.join_date)} | الهاتف: {partner?.phone}
-            </p>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                <Wallet className="w-3 h-3" />
+                <span>محفظتك الاستثمارية</span>
+              </span>
+            </div>
+            <h1 className="text-base sm:text-2xl font-black leading-tight">مرحباً، {partner?.full_name}</h1>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="grid grid-cols-2 gap-2 w-full sm:w-auto sm:flex sm:items-center">
             <button
               onClick={openWithdrawalReqModal}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg shadow-emerald-950/40 transition-all active:scale-95"
+              className="flex items-center justify-center gap-1.5 py-2 px-3 sm:px-5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-[11px] sm:text-xs font-bold shadow-md transition-all active:scale-95 text-center"
             >
-              <Send className="w-4 h-4" />
-              <span>طلب سحب مالي</span>
+              <Send className="w-3.5 h-3.5" />
+              <span className="truncate">طلب سحب مالي</span>
             </button>
             <button
               onClick={() => setCurrentView('statement')}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700 transition-all"
+              className="flex items-center justify-center gap-1.5 py-2 px-3 sm:px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] sm:text-xs font-bold border border-slate-700 transition-all text-center"
             >
-              <FileText className="w-4 h-4 text-emerald-400" />
-              <span>كشف الحساب التفصيلي</span>
+              <FileText className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="truncate">كشف الحساب</span>
             </button>
           </div>
         </div>

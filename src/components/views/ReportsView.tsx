@@ -197,7 +197,7 @@ export default function ReportsView() {
       </div>
 
       {/* Printable Report Document Card */}
-      <div className="p-8 rounded-3xl bg-white text-slate-900 shadow-xl border border-slate-200 print-card">
+      <div className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-white text-slate-900 shadow-xl border border-slate-200 print-card overflow-hidden">
         {/* Report Header */}
         <div className="flex items-start justify-between border-b-2 border-slate-900 pb-5 mb-6">
           <div>
