@@ -108,3 +108,62 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const user = getUserFromRequest(req);
+    if (!user || user.role !== 'admin') {
+      return NextResponse.json({ error: 'صلاحية المدير مطلوبة لحذف الشريك' }, { status: 403 });
+    }
+
+    const partnerId = params.id;
+    const db = getDb();
+
+    const pIndex = db.partners.findIndex((p) => p.id === partnerId);
+    if (pIndex === -1) {
+      return NextResponse.json({ error: 'الشريك غير موجود' }, { status: 404 });
+    }
+
+    const partnerToDelete = db.partners[pIndex];
+
+    // Remove partner
+    db.partners.splice(pIndex, 1);
+
+    // Remove linked user
+    if (partnerToDelete.user_id) {
+      db.users = db.users.filter((u) => u.id !== partnerToDelete.user_id && u.partner_id !== partnerId);
+    } else {
+      db.users = db.users.filter((u) => u.partner_id !== partnerId);
+    }
+
+    // Remove portfolio
+    db.portfolios = db.portfolios.filter((pf) => pf.partner_id !== partnerId);
+
+    // Remove associated records
+    db.transactions = db.transactions.filter((t) => t.partner_id !== partnerId);
+    db.deposits = db.deposits.filter((d) => d.partner_id !== partnerId);
+    db.withdrawals = db.withdrawals.filter((w) => w.partner_id !== partnerId);
+    db.withdrawal_requests = db.withdrawal_requests.filter((r) => r.partner_id !== partnerId);
+    db.portfolio_valuations = db.portfolio_valuations.filter((v) => v.partner_id !== partnerId);
+    db.management_fees = db.management_fees.filter((f) => f.partner_id !== partnerId);
+    db.notifications = db.notifications.filter((n) => n.partner_id !== partnerId);
+
+    saveDatabase(db);
+
+    recordAuditLog(
+      user,
+      'DELETE',
+      'partner',
+      partnerId,
+      partnerToDelete,
+      { message: `تم حذف الشريك ${partnerToDelete.full_name} ومحفظته نهائياً` }
+    );
+
+    return NextResponse.json({
+      success: true,
+      message: `تم حذف الشريك (${partnerToDelete.full_name}) وكافة بيانات محفظته بنجاح`,
+    });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}

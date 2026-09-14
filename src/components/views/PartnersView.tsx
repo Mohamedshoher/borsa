@@ -19,6 +19,8 @@ import {
   RefreshCw,
   Calculator,
   Percent,
+  Trash2,
+  AlertTriangle,
 } from 'lucide-react';
 import { formatCurrency, formatPercent, formatDate } from '@/lib/utils';
 import { Partner, Portfolio } from '@/lib/types';
@@ -45,6 +47,10 @@ export default function PartnersView({ openAddPartnerModal, openValuationModal }
   const [editNotes, setEditNotes] = useState('');
   const [editPassword, setEditPassword] = useState('');
   const [isSavingEdit, setIsSavingEdit] = useState(false);
+
+  // Delete Confirmation State
+  const [deletingPartner, setDeletingPartner] = useState<Partner | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchPartners = async () => {
     try {
@@ -125,6 +131,28 @@ export default function PartnersView({ openAddPartnerModal, openValuationModal }
       showToast(err.message || 'خطأ في التحديث', 'error');
     } finally {
       setIsSavingEdit(false);
+    }
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deletingPartner) return;
+    try {
+      setIsDeleting(true);
+      const res = await fetch(`/api/partners/${deletingPartner.id}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'فشل حذف الشريك');
+      }
+
+      showToast(data.message || `تم حذف الشريك (${deletingPartner.full_name}) بنجاح`, 'success');
+      triggerRefresh();
+      setDeletingPartner(null);
+    } catch (err: any) {
+      showToast(err.message || 'حدث خطأ أثناء محاولة الحذف', 'error');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -309,17 +337,105 @@ export default function PartnersView({ openAddPartnerModal, openValuationModal }
                     onClick={() => togglePartnerStatus(partner)}
                     className={`p-2 rounded-xl transition-colors ${
                       isActive
-                        ? 'bg-slate-100 dark:bg-slate-800 hover:bg-rose-50 text-slate-600 hover:text-rose-600'
-                        : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
+                        ? 'bg-slate-100 dark:bg-slate-800 hover:bg-amber-50 dark:hover:bg-amber-950/50 text-slate-600 hover:text-amber-600'
+                        : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300'
                     }`}
                     title={isActive ? 'إيقاف الحساب' : 'تفعيل الحساب'}
                   >
                     <Power className="w-4 h-4" />
                   </button>
+
+                  {/* Delete Button (highlighted when suspended or available) */}
+                  <button
+                    onClick={() => setDeletingPartner(partner)}
+                    className={`p-2 rounded-xl transition-colors ${
+                      !isActive
+                        ? 'bg-rose-100 text-rose-700 hover:bg-rose-200 dark:bg-rose-950/70 dark:text-rose-300 dark:hover:bg-rose-900/60 shadow-sm'
+                        : 'bg-slate-100 dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950 text-slate-400 hover:text-rose-600'
+                    }`}
+                    title={!isActive ? 'حذف الشريك الموقوف نهائياً' : 'حذف الشريك'}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Delete Partner Confirmation Modal */}
+      {deletingPartner && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-200">
+          <div className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-rose-200 dark:border-rose-900/50 overflow-hidden my-8">
+            <div className="px-6 py-4 bg-gradient-to-r from-rose-600 to-red-700 text-white flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-white/10">
+                  <Trash2 className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-bold">تأكيد مسح / حذف الشريك</h2>
+                  <p className="text-[11px] text-rose-100">إجراء نهائي لا يمكن التراجع عنه</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setDeletingPartner(null)}
+                className="p-1 rounded-full hover:bg-white/20 text-white/80 hover:text-white"
+              >
+                <XCircle className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div className="p-4 rounded-2xl bg-rose-50/80 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60 flex items-start gap-3">
+                <AlertTriangle className="w-5 h-5 text-rose-600 dark:text-rose-400 flex-shrink-0 mt-0.5" />
+                <div className="text-xs text-rose-900 dark:text-rose-200 leading-relaxed">
+                  هل أنت متأكد من رغبتك في حذف الشريك <strong className="font-bold text-rose-700 dark:text-rose-300">({deletingPartner.full_name})</strong>؟
+                  <br />
+                  سيتم حذف حساب الشريك والمحفظة الاستثمارية وجميع العمليات والإيداعات والتقييمات المرتبطة به نهائياً من النظام.
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-xs space-y-1.5">
+                <div className="flex justify-between">
+                  <span className="text-slate-500">اسم المستخدم:</span>
+                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200">@{deletingPartner.username || 'user'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">رأس المال:</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200 font-financial">
+                    {formatCurrency(deletingPartner.portfolio?.initial_capital)}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">الحالة الحالية:</span>
+                  <span className={`font-bold ${deletingPartner.status === 'suspended' ? 'text-amber-600' : 'text-emerald-600'}`}>
+                    {deletingPartner.status === 'suspended' ? 'موقوف' : 'نشط'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setDeletingPartner(null)}
+                  disabled={isDeleting}
+                  className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold"
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteConfirm}
+                  disabled={isDeleting}
+                  className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-lg shadow-rose-950/20 disabled:opacity-50 transition-all"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>{isDeleting ? 'جاري الحذف...' : 'تأكيد الحذف النهائي'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

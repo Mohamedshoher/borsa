@@ -8,35 +8,365 @@
       "role": "admin",
       "partner_id": null,
       "status": "active",
-      "created_at": "2026-09-14T00:00:00Z"
+      "created_at": "2026-09-14T08:49:29.288Z"
+    },
+    {
+      "id": "usr_1789375787813_ox5w",
+      "username": "01064116467",
+      "password_hash": "hash_123456",
+      "full_name": "عبد الله",
+      "role": "partner",
+      "partner_id": "prt_1789375787813_jgs4",
+      "status": "active",
+      "created_at": "2026-09-14T08:49:47.813Z"
     }
   ],
-  "partners": [],
-  "portfolios": [],
-  "transactions": [],
+  "partners": [
+    {
+      "id": "prt_1789375787813_jgs4",
+      "full_name": "عبد الله",
+      "phone": "020",
+      "email": null,
+      "join_date": "2026-09-14",
+      "join_time": "10:00",
+      "management_fee_rate": 2,
+      "status": "active",
+      "notes": null,
+      "user_id": "usr_1789375787813_ox5w",
+      "created_at": "2026-09-14T08:49:47.813Z"
+    }
+  ],
+  "portfolios": [
+    {
+      "id": "port_prt_1789375787813_jgs4",
+      "partner_id": "prt_1789375787813_jgs4",
+      "initial_capital": 100000,
+      "total_deposits": 0,
+      "total_withdrawals": 0,
+      "total_profits": 0,
+      "total_losses": 0,
+      "current_valuation": 100000,
+      "total_fees_incurred": 2000,
+      "fees_paid": 2000,
+      "fees_due": 0,
+      "net_value": 100000,
+      "last_valuation_date": "2026-09-14",
+      "updated_at": "2026-09-14T08:49:47.817Z"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "txn_1789375787815_26zo9",
+      "transaction_number": "TXN-2026-1002",
+      "partner_id": "prt_1789375787813_jgs4",
+      "portfolio_id": "port_prt_1789375787813_jgs4",
+      "type": "INITIAL_MGMT_FEE",
+      "amount": -2000,
+      "date": "2026-09-14",
+      "time": "10:00",
+      "balance_before": 100000,
+      "balance_after": 98000,
+      "created_by_user_id": "usr_admin_01",
+      "payment_method": "خصم من الحساب",
+      "reference_no": null,
+      "notes": "أتعاب إدارة - بداية الاستثمار (2% من 100000 ج.م)",
+      "is_reversed": 0,
+      "reversed_by_txn_id": null,
+      "created_at": "2026-09-14T08:49:47.815Z"
+    },
+    {
+      "id": "txn_1789375787814_q88q4",
+      "transaction_number": "TXN-2026-1001",
+      "partner_id": "prt_1789375787813_jgs4",
+      "portfolio_id": "port_prt_1789375787813_jgs4",
+      "type": "INITIAL_INVESTMENT",
+      "amount": 100000,
+      "date": "2026-09-14",
+      "time": "10:00",
+      "balance_before": 0,
+      "balance_after": 100000,
+      "created_by_user_id": "usr_admin_01",
+      "payment_method": "تحويل بنكي",
+      "reference_no": null,
+      "notes": "رأس المال الابتدائي لبداية الاستثمار في البورصة",
+      "is_reversed": 0,
+      "reversed_by_txn_id": null,
+      "created_at": "2026-09-14T08:49:47.814Z"
+    }
+  ],
   "deposits": [],
   "withdrawals": [],
   "withdrawal_requests": [],
   "portfolio_valuations": [],
-  "management_fees": [],
+  "management_fees": [
+    {
+      "id": "fee_prt_1789375787813_jgs4_init",
+      "partner_id": "prt_1789375787813_jgs4",
+      "portfolio_id": "port_prt_1789375787813_jgs4",
+      "transaction_id": "txn_1789375787815_26zo9",
+      "fee_type": "INITIAL",
+      "period_month": "INITIAL",
+      "portfolio_value_at_calc": 100000,
+      "fee_percentage": 2,
+      "fee_amount": 2000,
+      "status": "collected",
+      "calculation_date": "2026-09-14",
+      "collection_date": "2026-09-14",
+      "notes": "أتعاب بداية الاستثمار 2%",
+      "created_by": "usr_admin_01",
+      "created_at": "2026-09-14T08:49:47.813Z"
+    }
+  ],
   "audit_logs": [
+    {
+      "id": "aud_1789375955108_p065if",
+      "user_id": "usr_admin_01",
+      "user_name": "المدير العام",
+      "user_role": "admin",
+      "action": "DELETE",
+      "entity_type": "partner",
+      "entity_id": "prt_sarah_03",
+      "old_data": {
+        "id": "prt_sarah_03",
+        "full_name": "د. سارة إبراهيم",
+        "phone": "01234567890",
+        "email": "sarah.ibrahim@example.com",
+        "join_date": "2026-08-01",
+        "join_time": "11:30",
+        "management_fee_rate": 2,
+        "status": "suspended",
+        "notes": "شريكة مستثمرة - محفظة تنمية رأس مال متوازنة",
+        "user_id": "usr_sarah_03",
+        "created_at": "2026-08-01T11:00:00Z"
+      },
+      "new_data": {
+        "message": "تم حذف الشريك د. سارة إبراهيم ومحفظته نهائياً"
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-09-14T08:52:35.108Z"
+    },
+    {
+      "id": "aud_1789375951126_gwqei5",
+      "user_id": "usr_admin_01",
+      "user_name": "المدير العام",
+      "user_role": "admin",
+      "action": "DELETE",
+      "entity_type": "partner",
+      "entity_id": "prt_tarek_02",
+      "old_data": {
+        "id": "prt_tarek_02",
+        "full_name": "م. طارق عبد العزيز",
+        "phone": "01123456789",
+        "email": "tarek.aziz@example.com",
+        "join_date": "2026-05-10",
+        "join_time": "10:15",
+        "management_fee_rate": 2,
+        "status": "suspended",
+        "notes": "شريك مستثمر - محفظة متوسطة إلى طويلة الأجل",
+        "user_id": "usr_tarek_02",
+        "created_at": "2026-05-10T10:00:00Z"
+      },
+      "new_data": {
+        "message": "تم حذف الشريك م. طارق عبد العزيز ومحفظته نهائياً"
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-09-14T08:52:31.126Z"
+    },
+    {
+      "id": "aud_1789375947904_973u9r",
+      "user_id": "usr_admin_01",
+      "user_name": "المدير العام",
+      "user_role": "admin",
+      "action": "DELETE",
+      "entity_type": "partner",
+      "entity_id": "prt_ahmed_01",
+      "old_data": {
+        "id": "prt_ahmed_01",
+        "full_name": "أحمد محمود الشناوي",
+        "phone": "01012345678",
+        "email": "ahmed.shennawy@example.com",
+        "join_date": "2026-06-01",
+        "join_time": "09:30",
+        "management_fee_rate": 2,
+        "status": "suspended",
+        "notes": "شريك مستثمر - محفظة أسهم قيادية EGX30",
+        "user_id": "usr_ahmed_01",
+        "created_at": "2026-06-01T09:00:00Z"
+      },
+      "new_data": {
+        "message": "تم حذف الشريك أحمد محمود الشناوي ومحفظته نهائياً"
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-09-14T08:52:27.904Z"
+    },
+    {
+      "id": "aud_1789375811005_re80lt",
+      "user_id": "usr_admin_01",
+      "user_name": "المدير العام",
+      "user_role": "admin",
+      "action": "UPDATE",
+      "entity_type": "partner",
+      "entity_id": "prt_sarah_03",
+      "old_data": {
+        "id": "prt_sarah_03",
+        "full_name": "د. سارة إبراهيم",
+        "phone": "01234567890",
+        "email": "sarah.ibrahim@example.com",
+        "join_date": "2026-08-01",
+        "join_time": "11:30",
+        "management_fee_rate": 2,
+        "status": "active",
+        "notes": "شريكة مستثمرة - محفظة تنمية رأس مال متوازنة",
+        "user_id": "usr_sarah_03",
+        "created_at": "2026-08-01T11:00:00Z"
+      },
+      "new_data": {
+        "id": "prt_sarah_03",
+        "full_name": "د. سارة إبراهيم",
+        "phone": "01234567890",
+        "email": "sarah.ibrahim@example.com",
+        "join_date": "2026-08-01",
+        "join_time": "11:30",
+        "management_fee_rate": 2,
+        "status": "suspended",
+        "notes": "شريكة مستثمرة - محفظة تنمية رأس مال متوازنة",
+        "user_id": "usr_sarah_03",
+        "created_at": "2026-08-01T11:00:00Z"
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-09-14T08:50:11.005Z"
+    },
+    {
+      "id": "aud_1789375806940_eypq3q",
+      "user_id": "usr_admin_01",
+      "user_name": "المدير العام",
+      "user_role": "admin",
+      "action": "UPDATE",
+      "entity_type": "partner",
+      "entity_id": "prt_tarek_02",
+      "old_data": {
+        "id": "prt_tarek_02",
+        "full_name": "م. طارق عبد العزيز",
+        "phone": "01123456789",
+        "email": "tarek.aziz@example.com",
+        "join_date": "2026-05-10",
+        "join_time": "10:15",
+        "management_fee_rate": 2,
+        "status": "active",
+        "notes": "شريك مستثمر - محفظة متوسطة إلى طويلة الأجل",
+        "user_id": "usr_tarek_02",
+        "created_at": "2026-05-10T10:00:00Z"
+      },
+      "new_data": {
+        "id": "prt_tarek_02",
+        "full_name": "م. طارق عبد العزيز",
+        "phone": "01123456789",
+        "email": "tarek.aziz@example.com",
+        "join_date": "2026-05-10",
+        "join_time": "10:15",
+        "management_fee_rate": 2,
+        "status": "suspended",
+        "notes": "شريك مستثمر - محفظة متوسطة إلى طويلة الأجل",
+        "user_id": "usr_tarek_02",
+        "created_at": "2026-05-10T10:00:00Z"
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-09-14T08:50:06.940Z"
+    },
+    {
+      "id": "aud_1789375804768_qi8esp",
+      "user_id": "usr_admin_01",
+      "user_name": "المدير العام",
+      "user_role": "admin",
+      "action": "UPDATE",
+      "entity_type": "partner",
+      "entity_id": "prt_ahmed_01",
+      "old_data": {
+        "id": "prt_ahmed_01",
+        "full_name": "أحمد محمود الشناوي",
+        "phone": "01012345678",
+        "email": "ahmed.shennawy@example.com",
+        "join_date": "2026-06-01",
+        "join_time": "09:30",
+        "management_fee_rate": 2,
+        "status": "active",
+        "notes": "شريك مستثمر - محفظة أسهم قيادية EGX30",
+        "user_id": "usr_ahmed_01",
+        "created_at": "2026-06-01T09:00:00Z"
+      },
+      "new_data": {
+        "id": "prt_ahmed_01",
+        "full_name": "أحمد محمود الشناوي",
+        "phone": "01012345678",
+        "email": "ahmed.shennawy@example.com",
+        "join_date": "2026-06-01",
+        "join_time": "09:30",
+        "management_fee_rate": 2,
+        "status": "suspended",
+        "notes": "شريك مستثمر - محفظة أسهم قيادية EGX30",
+        "user_id": "usr_ahmed_01",
+        "created_at": "2026-06-01T09:00:00Z"
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-09-14T08:50:04.768Z"
+    },
+    {
+      "id": "aud_1789375787818_unid47",
+      "user_id": "usr_admin_01",
+      "user_name": "المدير العام",
+      "user_role": "admin",
+      "action": "CREATE",
+      "entity_type": "partner",
+      "entity_id": "prt_1789375787813_jgs4",
+      "old_data": null,
+      "new_data": {
+        "full_name": "عبد الله",
+        "phone": "020",
+        "initial_capital": 100000,
+        "username": "01064116467",
+        "management_fee_rate": 2
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-09-14T08:49:47.818Z"
+    },
     {
       "id": "aud_init_01",
       "user_id": "usr_admin_01",
       "user_name": "المدير العام",
       "user_role": "admin",
       "action": "CREATE",
-      "entity_type": "settings",
-      "entity_id": "default",
+      "entity_type": "system",
+      "entity_id": "init",
       "old_data": null,
       "new_data": {
-        "message": "تهيئة النظام وقاعدة البيانات للإنتاج الفعلي"
+        "message": "تهيئة النظام وقاعدة البيانات للمحافظ"
       },
       "ip_address": "127.0.0.1",
-      "timestamp": "2026-09-14T00:00:00Z"
+      "timestamp": "2026-09-14T08:49:29.288Z"
     }
   ],
-  "notifications": [],
+  "notifications": [
+    {
+      "id": "notif_1789375787818_larn",
+      "user_id": "usr_admin_01",
+      "partner_id": "prt_1789375787813_jgs4",
+      "title": "تم تسجيل شريك جديد بنجاح",
+      "message": "تم إنشاء محفظة الشريك عبد الله برأس مال 100000 ج.م وبنسبة أتعاب 2%.",
+      "type": "SUCCESS",
+      "is_read": 0,
+      "created_at": "2026-09-14T08:49:47.813Z"
+    },
+    {
+      "id": "notif_init_01",
+      "user_id": "usr_admin_01",
+      "partner_id": null,
+      "title": "مرحباً بك في منصة إدارة المحافظ",
+      "message": "تم تشغيل النظام المالي والإداري وإعداد المحافظ بنجاح.",
+      "type": "INFO",
+      "is_read": 0,
+      "created_at": "2026-09-14T08:49:29.288Z"
+    }
+  ],
   "system_settings": {
     "system_name": "منصة إدارة محافظ الشركاء - مركز الشاطبي",
     "manager_name": "مدير الاستثمار",

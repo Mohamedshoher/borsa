@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#065f46" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="110" fill="url(#bgGrad)" stroke="#10b981" stroke-width="12" />
+  <text x="50%" y="45%" text-anchor="middle" dominant-baseline="central" font-size="160">📈</text>
+  <text x="50%" y="78%" text-anchor="middle" dominant-baseline="central" fill="#6ee7b7" font-family="Cairo, system-ui, sans-serif" font-size="44" font-weight="bold">الشاطبي</text>
+</svg>
