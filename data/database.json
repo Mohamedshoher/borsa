@@ -9,17 +9,134 @@
       "partner_id": null,
       "status": "active",
       "created_at": "2026-09-14T00:00:00Z"
+    },
+    {
+      "id": "usr_1789363849907_pl9j",
+      "username": "partner_678",
+      "password_hash": "hash_123456",
+      "full_name": "انعام",
+      "role": "partner",
+      "partner_id": "prt_1789363849907_dadc",
+      "status": "active",
+      "created_at": "2026-09-14T05:30:49.907Z"
     }
   ],
-  "partners": [],
-  "portfolios": [],
-  "transactions": [],
+  "partners": [
+    {
+      "id": "prt_1789363849907_dadc",
+      "full_name": "انعام",
+      "phone": "010641164676",
+      "email": null,
+      "join_date": "2026-09-14",
+      "join_time": "10:00",
+      "management_fee_rate": 2,
+      "status": "active",
+      "notes": null,
+      "user_id": "usr_1789363849907_pl9j",
+      "created_at": "2026-09-14T05:30:49.907Z"
+    }
+  ],
+  "portfolios": [
+    {
+      "id": "port_prt_1789363849907_dadc",
+      "partner_id": "prt_1789363849907_dadc",
+      "initial_capital": 50000,
+      "total_deposits": 0,
+      "total_withdrawals": 0,
+      "total_profits": 0,
+      "total_losses": 0,
+      "current_valuation": 50000,
+      "total_fees_incurred": 1000,
+      "fees_paid": 1000,
+      "fees_due": 0,
+      "net_value": 50000,
+      "last_valuation_date": "2026-09-14",
+      "updated_at": "2026-09-14T05:30:49.913Z"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "txn_1789363849910_utz5s",
+      "transaction_number": "TXN-2026-1002",
+      "partner_id": "prt_1789363849907_dadc",
+      "portfolio_id": "port_prt_1789363849907_dadc",
+      "type": "INITIAL_MGMT_FEE",
+      "amount": -1000,
+      "date": "2026-09-14",
+      "time": "10:00",
+      "balance_before": 50000,
+      "balance_after": 49000,
+      "created_by_user_id": "usr_admin_01",
+      "payment_method": "خصم من الحساب",
+      "reference_no": null,
+      "notes": "أتعاب إدارة - بداية الاستثمار (2% من 50000 ج.م)",
+      "is_reversed": 0,
+      "reversed_by_txn_id": null,
+      "created_at": "2026-09-14T05:30:49.910Z"
+    },
+    {
+      "id": "txn_1789363849909_xefpn",
+      "transaction_number": "TXN-2026-1001",
+      "partner_id": "prt_1789363849907_dadc",
+      "portfolio_id": "port_prt_1789363849907_dadc",
+      "type": "INITIAL_INVESTMENT",
+      "amount": 50000,
+      "date": "2026-09-14",
+      "time": "10:00",
+      "balance_before": 0,
+      "balance_after": 50000,
+      "created_by_user_id": "usr_admin_01",
+      "payment_method": "تحويل بنكي",
+      "reference_no": null,
+      "notes": "رأس المال الابتدائي لبداية الاستثمار في البورصة",
+      "is_reversed": 0,
+      "reversed_by_txn_id": null,
+      "created_at": "2026-09-14T05:30:49.909Z"
+    }
+  ],
   "deposits": [],
   "withdrawals": [],
   "withdrawal_requests": [],
   "portfolio_valuations": [],
-  "management_fees": [],
+  "management_fees": [
+    {
+      "id": "fee_prt_1789363849907_dadc_init",
+      "partner_id": "prt_1789363849907_dadc",
+      "portfolio_id": "port_prt_1789363849907_dadc",
+      "transaction_id": "txn_1789363849910_utz5s",
+      "fee_type": "INITIAL",
+      "period_month": "INITIAL",
+      "portfolio_value_at_calc": 50000,
+      "fee_percentage": 2,
+      "fee_amount": 1000,
+      "status": "collected",
+      "calculation_date": "2026-09-14",
+      "collection_date": "2026-09-14",
+      "notes": "أتعاب بداية الاستثمار 2%",
+      "created_by": "usr_admin_01",
+      "created_at": "2026-09-14T05:30:49.907Z"
+    }
+  ],
   "audit_logs": [
+    {
+      "id": "aud_1789363849914_pr2uu8",
+      "user_id": "usr_admin_01",
+      "user_name": "محمد مصطفى شكر (المدير)",
+      "user_role": "admin",
+      "action": "CREATE",
+      "entity_type": "partner",
+      "entity_id": "prt_1789363849907_dadc",
+      "old_data": null,
+      "new_data": {
+        "full_name": "انعام",
+        "phone": "010641164676",
+        "initial_capital": 50000,
+        "username": "partner_678",
+        "management_fee_rate": 2
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-09-14T05:30:49.914Z"
+    },
     {
       "id": "aud_init_01",
       "user_id": "usr_admin_01",
@@ -29,12 +146,25 @@
       "entity_type": "settings",
       "entity_id": "default",
       "old_data": null,
-      "new_data": { "message": "تهيئة النظام وقاعدة البيانات للإنتاج الفعلي" },
+      "new_data": {
+        "message": "تهيئة النظام وقاعدة البيانات للإنتاج الفعلي"
+      },
       "ip_address": "127.0.0.1",
       "timestamp": "2026-09-14T00:00:00Z"
     }
   ],
-  "notifications": [],
+  "notifications": [
+    {
+      "id": "notif_1789363849915_80ah",
+      "user_id": "usr_admin_01",
+      "partner_id": "prt_1789363849907_dadc",
+      "title": "تم تسجيل شريك جديد بنجاح",
+      "message": "تم إنشاء محفظة الشريك انعام برأس مال 50000 ج.م وبنسبة أتعاب 2%.",
+      "type": "SUCCESS",
+      "is_read": 0,
+      "created_at": "2026-09-14T05:30:49.907Z"
+    }
+  ],
   "system_settings": {
     "system_name": "منصة إدارة محافظ الشركاء - مركز الشاطبي",
     "manager_name": "محمد مصطفى شكر (مدير الاستثمار)",

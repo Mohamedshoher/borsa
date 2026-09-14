@@ -5,13 +5,8 @@ import { useApp } from '@/context/AppContext';
 import {
   Menu,
   Bell,
-  UserCheck,
-  Check,
   PlusCircle,
   Calendar,
-  Sparkles,
-  ShieldCheck,
-  User,
   CheckCheck,
 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
@@ -24,7 +19,6 @@ interface NavbarProps {
 export default function Navbar({ setMobileOpen, openAddPartnerModal }: NavbarProps) {
   const {
     user,
-    quickSwitchUser,
     notifications,
     unreadCount,
     fetchNotifications,
@@ -32,12 +26,10 @@ export default function Navbar({ setMobileOpen, openAddPartnerModal }: NavbarPro
     systemSettings,
   } = useApp();
 
-  const [showRoleDropdown, setShowRoleDropdown] = useState(false);
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
   const [currentTime, setCurrentTime] = useState<string>('');
 
   const notifRef = useRef<HTMLDivElement>(null);
-  const roleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const updateTime = () => {
@@ -60,9 +52,6 @@ export default function Navbar({ setMobileOpen, openAddPartnerModal }: NavbarPro
     const handleClickOutside = (event: MouseEvent) => {
       if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
         setShowNotifDropdown(false);
-      }
-      if (roleRef.current && !roleRef.current.contains(event.target as Node)) {
-        setShowRoleDropdown(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -129,66 +118,8 @@ export default function Navbar({ setMobileOpen, openAddPartnerModal }: NavbarPro
         </div>
       </div>
 
-      {/* Left Side: Role Quick Switcher + Notifications + Quick Actions */}
+      {/* Left Side: Notifications + Quick Actions */}
       <div className="flex items-center gap-2 sm:gap-3">
-        {/* Quick Role Switcher Dropdown */}
-        <div className="relative" ref={roleRef}>
-          <button
-            onClick={() => setShowRoleDropdown(!showRoleDropdown)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-semibold transition-all shadow-sm"
-            title="تبديل سريع بين حساب المدير وحسابات الشركاء التجريبية"
-          >
-            <UserCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-            <span className="hidden md:inline">تبديل الحساب التجريبي</span>
-            <span className="md:hidden">تبديل</span>
-          </button>
-
-          {showRoleDropdown && (
-            <div className="absolute left-0 mt-2 w-72 sm:w-80 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-2 z-50 animate-in fade-in slide-in-from-top-2">
-              <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                  اختر حساباً للتجربة المباشرة
-                </span>
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-              </div>
-              <div className="py-1">
-                {demoAccounts.map((acc) => {
-                  const isCurrent = user?.username === acc.username;
-                  return (
-                    <button
-                      key={acc.username}
-                      onClick={() => {
-                        quickSwitchUser(acc.username);
-                        setShowRoleDropdown(false);
-                      }}
-                      className={`w-full text-right px-4 py-2.5 flex items-start gap-3 transition-colors ${
-                        isCurrent
-                          ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 font-semibold'
-                          : 'hover:bg-slate-50 dark:hover:bg-slate-800/80 text-slate-700 dark:text-slate-300'
-                      }`}
-                    >
-                      <div className="mt-0.5">
-                        {acc.role === 'admin' ? (
-                          <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                        ) : (
-                          <User className="w-4 h-4 text-blue-500" />
-                        )}
-                      </div>
-                      <div className="flex-1 overflow-hidden">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold truncate">{acc.label}</span>
-                          {isCurrent && <Check className="w-3.5 h-3.5 text-emerald-600" />}
-                        </div>
-                        <p className="text-[11px] text-slate-400 truncate mt-0.5">{acc.desc}</p>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </div>
-
         {/* Notifications Dropdown */}
         <div className="relative" ref={notifRef}>
           <button

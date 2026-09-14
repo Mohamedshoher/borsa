@@ -5,15 +5,11 @@ import { useApp } from '@/context/AppContext';
 import {
   Lock,
   User,
-  ShieldCheck,
   TrendingUp,
-  Sparkles,
-  ArrowRight,
-  CheckCircle2,
 } from 'lucide-react';
 
 export default function LoginScreen() {
-  const { setUser, quickSwitchUser, showToast, systemSettings } = useApp();
+  const { setUser, showToast, systemSettings } = useApp();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -120,43 +116,6 @@ export default function LoginScreen() {
               {isSubmitting ? 'جاري التحقق...' : 'تسجيل الدخول'}
             </button>
           </form>
-
-          {/* 1-Click Fast Demo Login Buttons */}
-          <div className="pt-4 border-t border-slate-800 space-y-2">
-            <div className="flex items-center justify-between text-xs text-slate-400 font-semibold mb-2">
-              <span className="flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>دخول تجريبي سريع بنقرة واحدة:</span>
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {demoAccounts.map((acc) => (
-                <button
-                  key={acc.username}
-                  type="button"
-                  onClick={() => quickSwitchUser(acc.username)}
-                  className="text-right p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-750 border border-slate-700/80 hover:border-emerald-500/60 transition-all group"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-200 group-hover:text-emerald-300 truncate">
-                      {acc.label.split(' ')[0]} {acc.label.split(' ')[1]}
-                    </span>
-                    <span
-                      className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${
-                        acc.role === 'admin'
-                          ? 'bg-emerald-500/20 text-emerald-400'
-                          : 'bg-blue-500/20 text-blue-400'
-                      }`}
-                    >
-                      {acc.role === 'admin' ? 'مدير' : 'شريك'}
-                    </span>
-                  </div>
-                  <span className="text-[10px] text-slate-400 block mt-0.5">{acc.balance}</span>
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* Footer */}
