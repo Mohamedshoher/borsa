@@ -45,9 +45,11 @@ export default function TransactionsView({ openReverseModal }: TransactionsViewP
       if (fromDate) params.append('from_date', fromDate);
       if (toDate) params.append('to_date', toDate);
 
+      params.append('_t', Date.now().toString());
+
       const [tRes, pRes] = await Promise.all([
-        fetch(`/api/transactions?${params.toString()}`),
-        user?.role === 'admin' ? fetch('/api/partners') : Promise.resolve(null),
+        fetch(`/api/transactions?${params.toString()}`, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } }),
+        user?.role === 'admin' ? fetch(`/api/partners?_t=${Date.now()}`, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } }) : Promise.resolve(null),
       ]);
 
       if (tRes.ok) {

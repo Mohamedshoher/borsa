@@ -57,9 +57,11 @@ export default function StatementOfAccountView() {
         if (fromDate) params.append('from_date', fromDate);
         if (toDate) params.append('to_date', toDate);
 
+        params.append('_t', Date.now().toString());
+
         const [pRes, tRes] = await Promise.all([
-          fetch(`/api/partners/${activePartnerId}`),
-          fetch(`/api/transactions?${params.toString()}`),
+          fetch(`/api/partners/${activePartnerId}?_t=${Date.now()}`, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } }),
+          fetch(`/api/transactions?${params.toString()}`, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } }),
         ]);
 
         if (pRes.ok) {

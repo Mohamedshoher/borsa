@@ -35,7 +35,10 @@ export default function WithdrawalRequestsView({
   const fetchRequests = async () => {
     try {
       setIsLoading(true);
-      const res = await fetch('/api/withdrawal-requests');
+      const res = await fetch(`/api/withdrawal-requests?t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache' },
+      });
       if (res.ok) {
         const data = await res.json();
         setRequests(data.withdrawal_requests || []);

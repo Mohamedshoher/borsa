@@ -33,7 +33,10 @@ export default function ManagementFeesView({ openFeeModal }: ManagementFeesViewP
   const fetchFees = async () => {
     try {
       setIsLoading(true);
-      const res = await fetch('/api/management-fees');
+      const res = await fetch(`/api/management-fees?t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache' },
+      });
       if (res.ok) {
         const data = await res.json();
         setFees(data.management_fees || []);

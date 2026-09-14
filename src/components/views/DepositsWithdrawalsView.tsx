@@ -38,10 +38,11 @@ export default function DepositsWithdrawalsView() {
   const fetchData = async () => {
     try {
       setIsLoading(true);
+      const now = Date.now();
       const [dRes, wRes, pRes] = await Promise.all([
-        fetch('/api/deposits'),
-        fetch('/api/withdrawals'),
-        user?.role === 'admin' ? fetch('/api/partners') : Promise.resolve(null),
+        fetch(`/api/deposits?t=${now}`, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } }),
+        fetch(`/api/withdrawals?t=${now}`, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } }),
+        user?.role === 'admin' ? fetch(`/api/partners?t=${now}`, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } }) : Promise.resolve(null),
       ]);
 
       if (dRes.ok) {

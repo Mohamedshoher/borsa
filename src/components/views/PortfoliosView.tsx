@@ -33,9 +33,10 @@ export default function PortfoliosView({ openValuationModal }: PortfoliosViewPro
   const fetchData = async () => {
     try {
       setIsLoading(true);
+      const now = Date.now();
       const [pRes, vRes] = await Promise.all([
-        fetch('/api/portfolios'),
-        fetch('/api/valuations'),
+        fetch(`/api/portfolios?t=${now}`, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } }),
+        fetch(`/api/valuations?t=${now}`, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } }),
       ]);
 
       if (pRes.ok) {

@@ -3,6 +3,7 @@ import { getDb } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET(req: NextRequest) {
   try {
@@ -16,9 +17,16 @@ export async function GET(req: NextRequest) {
     if (user.role === 'partner') {
       const portfolio = db.portfolios.find((p) => p.partner_id === user.partner_id);
       const partner = db.partners.find((p) => p.id === user.partner_id);
-      return NextResponse.json({
-        portfolios: portfolio ? [{ ...portfolio, partner_name: partner?.full_name, partner_phone: partner?.phone }] : [],
-      });
+      return NextResponse.json(
+        {
+          portfolios: portfolio ? [{ ...portfolio, partner_name: partner?.full_name, partner_phone: partner?.phone }] : [],
+        },
+        {
+          headers: {
+            'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+          },
+        }
+      );
     }
 
     // Admin: all portfolios joined with partner names
@@ -32,7 +40,14 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    return NextResponse.json({ portfolios: portfoliosWithPartner });
+    return NextResponse.json(
+      { portfolios: portfoliosWithPartner },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+        },
+      }
+    );
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

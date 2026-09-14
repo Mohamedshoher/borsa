@@ -55,7 +55,10 @@ export default function PartnersView({ openAddPartnerModal, openValuationModal }
   const fetchPartners = async () => {
     try {
       setIsLoading(true);
-      const res = await fetch('/api/partners');
+      const res = await fetch(`/api/partners?t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache' },
+      });
       if (res.ok) {
         const data = await res.json();
         setPartners(data.partners || []);

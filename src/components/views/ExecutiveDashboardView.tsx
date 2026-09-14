@@ -59,11 +59,12 @@ export default function ExecutiveDashboardView({
   const fetchDashboardData = async () => {
     try {
       setIsLoading(true);
+      const now = Date.now();
       const [pRes, tRes, rRes, fRes] = await Promise.all([
-        fetch('/api/partners'),
-        fetch('/api/transactions'),
-        fetch('/api/withdrawal-requests'),
-        fetch('/api/management-fees'),
+        fetch(`/api/partners?t=${now}`, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } }),
+        fetch(`/api/transactions?t=${now}`, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } }),
+        fetch(`/api/withdrawal-requests?t=${now}`, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } }),
+        fetch(`/api/management-fees?t=${now}`, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } }),
       ]);
 
       if (pRes.ok) {

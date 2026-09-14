@@ -6,6 +6,7 @@ import { recordAuditLog } from '@/lib/audit';
 import { Partner, Portfolio, User, ManagementFee } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 // GET: list all partners (for admin) or single partner (for partner)
 export async function GET(req: NextRequest) {
@@ -23,7 +24,16 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: 'بيانات الشريك غير موجودة' }, { status: 404 });
       }
       const portfolio = db.portfolios.find((pf) => pf.partner_id === partner.id);
-      return NextResponse.json({ partners: [{ ...partner, portfolio }] });
+      return NextResponse.json(
+        { partners: [{ ...partner, portfolio }] },
+        {
+          headers: {
+            'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+            'Pragma': 'no-cache',
+            'Expires': '0',
+          },
+        }
+      );
     }
 
     // Admin: see all partners joined with their portfolios and users
@@ -38,7 +48,16 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    return NextResponse.json({ partners: partnersWithDetails });
+    return NextResponse.json(
+      { partners: partnersWithDetails },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+      }
+    );
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
