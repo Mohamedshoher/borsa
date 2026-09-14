@@ -1,0 +1,48 @@
+{
+  "users": [
+    {
+      "id": "usr_admin_01",
+      "username": "admin",
+      "password_hash": "hash_admin123",
+      "full_name": "محمد مصطفى شكر (المدير)",
+      "role": "admin",
+      "partner_id": null,
+      "status": "active",
+      "created_at": "2026-09-14T00:00:00Z"
+    }
+  ],
+  "partners": [],
+  "portfolios": [],
+  "transactions": [],
+  "deposits": [],
+  "withdrawals": [],
+  "withdrawal_requests": [],
+  "portfolio_valuations": [],
+  "management_fees": [],
+  "audit_logs": [
+    {
+      "id": "aud_init_01",
+      "user_id": "usr_admin_01",
+      "user_name": "محمد مصطفى شكر (المدير)",
+      "user_role": "admin",
+      "action": "CREATE",
+      "entity_type": "settings",
+      "entity_id": "default",
+      "old_data": null,
+      "new_data": { "message": "تهيئة النظام وقاعدة البيانات للإنتاج الفعلي" },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-09-14T00:00:00Z"
+    }
+  ],
+  "notifications": [],
+  "system_settings": {
+    "system_name": "منصة إدارة محافظ الشركاء - مركز الشاطبي",
+    "manager_name": "محمد مصطفى شكر (مدير الاستثمار)",
+    "currency": "EGP",
+    "currency_symbol": "ج.م",
+    "default_mgmt_fee_rate": 2,
+    "mgmt_fee_basis": "VALUATION",
+    "accounting_month_start_day": 1,
+    "notifications_enabled": true
+  }
+}
