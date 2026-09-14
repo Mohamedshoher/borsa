@@ -11,35 +11,58 @@
       "created_at": "2026-09-14T08:49:29.288Z"
     },
     {
-      "id": "usr_1789376291654_3uq7",
+      "id": "usr_1789414685170_a3kr",
+      "username": "4545",
+      "password_hash": "hash_45",
+      "full_name": "عبد الله",
+      "role": "partner",
+      "partner_id": "prt_1789414685170_40d3",
+      "status": "active",
+      "created_at": "2026-09-14T19:38:05.170Z"
+    },
+    {
+      "id": "usr_1789414744892_n3kq",
       "username": "01064116467",
       "password_hash": "hash_123456",
-      "full_name": "محمد",
+      "full_name": "عبد الله",
       "role": "partner",
-      "partner_id": "prt_1789376291654_rm8n",
+      "partner_id": "prt_1789414744892_ixsf",
       "status": "active",
-      "created_at": "2026-09-14T08:58:11.654Z"
+      "created_at": "2026-09-14T19:39:04.891Z"
     }
   ],
   "partners": [
     {
-      "id": "prt_1789376291654_rm8n",
-      "full_name": "محمد",
-      "phone": "02",
-      "email": null,
+      "id": "prt_1789414685170_40d3",
+      "full_name": "عبد الله",
+      "phone": "012",
+      "email": "shokery2018@gmail.com",
       "join_date": "2026-09-14",
       "join_time": "10:00",
       "management_fee_rate": 2,
       "status": "active",
       "notes": null,
-      "user_id": "usr_1789376291654_3uq7",
-      "created_at": "2026-09-14T08:58:11.654Z"
+      "user_id": "usr_1789414685170_a3kr",
+      "created_at": "2026-09-14T19:38:05.170Z"
+    },
+    {
+      "id": "prt_1789414744892_ixsf",
+      "full_name": "عبد الله",
+      "phone": "020",
+      "email": "shokery2018@gmail.com",
+      "join_date": "2026-09-14",
+      "join_time": "10:00",
+      "management_fee_rate": 2,
+      "status": "active",
+      "notes": null,
+      "user_id": "usr_1789414744892_n3kq",
+      "created_at": "2026-09-14T19:39:04.891Z"
     }
   ],
   "portfolios": [
     {
-      "id": "port_prt_1789376291654_rm8n",
-      "partner_id": "prt_1789376291654_rm8n",
+      "id": "port_prt_1789414685170_40d3",
+      "partner_id": "prt_1789414685170_40d3",
       "initial_capital": 100000,
       "total_deposits": 0,
       "total_withdrawals": 0,
@@ -51,15 +74,69 @@
       "fees_due": 0,
       "net_value": 100000,
       "last_valuation_date": "2026-09-14",
-      "updated_at": "2026-09-14T08:58:11.656Z"
+      "updated_at": "2026-09-14T19:38:05.175Z"
+    },
+    {
+      "id": "port_prt_1789414744892_ixsf",
+      "partner_id": "prt_1789414744892_ixsf",
+      "initial_capital": 9000,
+      "total_deposits": 0,
+      "total_withdrawals": 0,
+      "total_profits": 0,
+      "total_losses": 0,
+      "current_valuation": 9000,
+      "total_fees_incurred": 180,
+      "fees_paid": 180,
+      "fees_due": 0,
+      "net_value": 9000,
+      "last_valuation_date": "2026-09-14",
+      "updated_at": "2026-09-14T19:39:04.895Z"
     }
   ],
   "transactions": [
     {
-      "id": "txn_1789376291655_hdmu9",
-      "transaction_number": "TXN-2026-1002",
-      "partner_id": "prt_1789376291654_rm8n",
-      "portfolio_id": "port_prt_1789376291654_rm8n",
+      "id": "txn_1789414744894_62j1y",
+      "transaction_number": "TXN-2026-1006",
+      "partner_id": "prt_1789414744892_ixsf",
+      "portfolio_id": "port_prt_1789414744892_ixsf",
+      "type": "INITIAL_MGMT_FEE",
+      "amount": -180,
+      "date": "2026-09-14",
+      "time": "10:00",
+      "balance_before": 9000,
+      "balance_after": 8820,
+      "created_by_user_id": "usr_admin_01",
+      "payment_method": "خصم من الحساب",
+      "reference_no": null,
+      "notes": "أتعاب إدارة - بداية الاستثمار (2% من 9000 ج.م)",
+      "is_reversed": 0,
+      "reversed_by_txn_id": null,
+      "created_at": "2026-09-14T19:39:04.894Z"
+    },
+    {
+      "id": "txn_1789414744893_5i3fk",
+      "transaction_number": "TXN-2026-1005",
+      "partner_id": "prt_1789414744892_ixsf",
+      "portfolio_id": "port_prt_1789414744892_ixsf",
+      "type": "INITIAL_INVESTMENT",
+      "amount": 9000,
+      "date": "2026-09-14",
+      "time": "10:00",
+      "balance_before": 0,
+      "balance_after": 9000,
+      "created_by_user_id": "usr_admin_01",
+      "payment_method": "إنستاباي / فودافون كاش",
+      "reference_no": null,
+      "notes": "رأس المال الابتدائي لبداية الاستثمار في البورصة",
+      "is_reversed": 0,
+      "reversed_by_txn_id": null,
+      "created_at": "2026-09-14T19:39:04.893Z"
+    },
+    {
+      "id": "txn_1789414685173_qpkyt",
+      "transaction_number": "TXN-2026-1004",
+      "partner_id": "prt_1789414685170_40d3",
+      "portfolio_id": "port_prt_1789414685170_40d3",
       "type": "INITIAL_MGMT_FEE",
       "amount": -2000,
       "date": "2026-09-14",
@@ -72,13 +149,13 @@
       "notes": "أتعاب إدارة - بداية الاستثمار (2% من 100000 ج.م)",
       "is_reversed": 0,
       "reversed_by_txn_id": null,
-      "created_at": "2026-09-14T08:58:11.655Z"
+      "created_at": "2026-09-14T19:38:05.173Z"
     },
     {
-      "id": "txn_1789376291654_pl7ng",
-      "transaction_number": "TXN-2026-1001",
-      "partner_id": "prt_1789376291654_rm8n",
-      "portfolio_id": "port_prt_1789376291654_rm8n",
+      "id": "txn_1789414685173_shc49",
+      "transaction_number": "TXN-2026-1003",
+      "partner_id": "prt_1789414685170_40d3",
+      "portfolio_id": "port_prt_1789414685170_40d3",
       "type": "INITIAL_INVESTMENT",
       "amount": 100000,
       "date": "2026-09-14",
@@ -91,7 +168,7 @@
       "notes": "رأس المال الابتدائي لبداية الاستثمار في البورصة",
       "is_reversed": 0,
       "reversed_by_txn_id": null,
-      "created_at": "2026-09-14T08:58:11.654Z"
+      "created_at": "2026-09-14T19:38:05.173Z"
     }
   ],
   "deposits": [],
@@ -100,10 +177,27 @@
   "portfolio_valuations": [],
   "management_fees": [
     {
-      "id": "fee_prt_1789376291654_rm8n_init",
-      "partner_id": "prt_1789376291654_rm8n",
-      "portfolio_id": "port_prt_1789376291654_rm8n",
-      "transaction_id": "txn_1789376291655_hdmu9",
+      "id": "fee_prt_1789414744892_ixsf_init",
+      "partner_id": "prt_1789414744892_ixsf",
+      "portfolio_id": "port_prt_1789414744892_ixsf",
+      "transaction_id": "txn_1789414744894_62j1y",
+      "fee_type": "INITIAL",
+      "period_month": "INITIAL",
+      "portfolio_value_at_calc": 9000,
+      "fee_percentage": 2,
+      "fee_amount": 180,
+      "status": "collected",
+      "calculation_date": "2026-09-14",
+      "collection_date": "2026-09-14",
+      "notes": "أتعاب بداية الاستثمار 2%",
+      "created_by": "usr_admin_01",
+      "created_at": "2026-09-14T19:39:04.891Z"
+    },
+    {
+      "id": "fee_prt_1789414685170_40d3_init",
+      "partner_id": "prt_1789414685170_40d3",
+      "portfolio_id": "port_prt_1789414685170_40d3",
+      "transaction_id": "txn_1789414685173_qpkyt",
       "fee_type": "INITIAL",
       "period_month": "INITIAL",
       "portfolio_value_at_calc": 100000,
@@ -114,10 +208,75 @@
       "collection_date": "2026-09-14",
       "notes": "أتعاب بداية الاستثمار 2%",
       "created_by": "usr_admin_01",
-      "created_at": "2026-09-14T08:58:11.654Z"
+      "created_at": "2026-09-14T19:38:05.170Z"
     }
   ],
   "audit_logs": [
+    {
+      "id": "aud_1789414744896_awppox",
+      "user_id": "usr_admin_01",
+      "user_name": "المدير العام",
+      "user_role": "admin",
+      "action": "CREATE",
+      "entity_type": "partner",
+      "entity_id": "prt_1789414744892_ixsf",
+      "old_data": null,
+      "new_data": {
+        "full_name": "عبد الله",
+        "phone": "020",
+        "initial_capital": 9000,
+        "username": "01064116467",
+        "management_fee_rate": 2
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-09-14T19:39:04.896Z"
+    },
+    {
+      "id": "aud_1789414703890_e285yk",
+      "user_id": "usr_admin_01",
+      "user_name": "المدير العام",
+      "user_role": "admin",
+      "action": "DELETE",
+      "entity_type": "partner",
+      "entity_id": "prt_1789376291654_rm8n",
+      "old_data": {
+        "id": "prt_1789376291654_rm8n",
+        "full_name": "محمد",
+        "phone": "02",
+        "email": null,
+        "join_date": "2026-09-14",
+        "join_time": "10:00",
+        "management_fee_rate": 2,
+        "status": "active",
+        "notes": null,
+        "user_id": "usr_1789376291654_3uq7",
+        "created_at": "2026-09-14T08:58:11.654Z"
+      },
+      "new_data": {
+        "message": "تم حذف الشريك محمد ومحفظته نهائياً"
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-09-14T19:38:23.890Z"
+    },
+    {
+      "id": "aud_1789414685175_qssu18",
+      "user_id": "usr_admin_01",
+      "user_name": "المدير العام",
+      "user_role": "admin",
+      "action": "CREATE",
+      "entity_type": "partner",
+      "entity_id": "prt_1789414685170_40d3",
+      "old_data": null,
+      "new_data": {
+        "full_name": "عبد الله",
+        "phone": "012",
+        "initial_capital": 100000,
+        "username": "4545",
+        "management_fee_rate": 2
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-09-14T19:38:05.175Z"
+    },
     {
       "id": "aud_1789376291657_ii7bo3",
       "user_id": "usr_admin_01",
@@ -393,14 +552,24 @@
   ],
   "notifications": [
     {
-      "id": "notif_1789376291658_hkap",
+      "id": "notif_1789414744896_zuoq",
       "user_id": "usr_admin_01",
-      "partner_id": "prt_1789376291654_rm8n",
+      "partner_id": "prt_1789414744892_ixsf",
       "title": "تم تسجيل شريك جديد بنجاح",
-      "message": "تم إنشاء محفظة الشريك محمد برأس مال 100000 ج.م وبنسبة أتعاب 2%.",
+      "message": "تم إنشاء محفظة الشريك عبد الله برأس مال 9000 ج.م وبنسبة أتعاب 2%.",
       "type": "SUCCESS",
       "is_read": 0,
-      "created_at": "2026-09-14T08:58:11.654Z"
+      "created_at": "2026-09-14T19:39:04.891Z"
+    },
+    {
+      "id": "notif_1789414685176_e72v",
+      "user_id": "usr_admin_01",
+      "partner_id": "prt_1789414685170_40d3",
+      "title": "تم تسجيل شريك جديد بنجاح",
+      "message": "تم إنشاء محفظة الشريك عبد الله برأس مال 100000 ج.م وبنسبة أتعاب 2%.",
+      "type": "SUCCESS",
+      "is_read": 0,
+      "created_at": "2026-09-14T19:38:05.170Z"
     },
     {
       "id": "notif_init_01",
