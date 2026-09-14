@@ -15,6 +15,8 @@ import {
   RefreshCw,
   Database,
   CloudUpload,
+  Lock,
+  KeyRound,
 } from 'lucide-react';
 import { SystemSettings } from '@/lib/types';
 
@@ -29,6 +31,12 @@ export default function SettingsView() {
   const [feeBasis, setFeeBasis] = useState('VALUATION');
   const [monthStartDay, setMonthStartDay] = useState(1);
   const [notifEnabled, setNotifEnabled] = useState(true);
+
+  // Change Password State
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   const [isSaving, setIsSaving] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
@@ -109,6 +117,42 @@ export default function SettingsView() {
       showToast('حدث خطأ أثناء الاتصال بقاعدة بيانات Supabase', 'error');
     } finally {
       setIsSyncingSupabase(false);
+    }
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPassword || newPassword.length < 4) {
+      showToast('كلمة المرور الجديدة يجب أن تكون 4 أحرف أو أرقام على الأقل', 'error');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      showToast('كلمة المرور الجديدة وتأكيدها غير متطابقين', 'error');
+      return;
+    }
+
+    try {
+      setIsChangingPassword(true);
+      const res = await fetch('/api/auth/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          current_password: currentPassword,
+          new_password: newPassword,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'فشل تغيير كلمة المرور');
+
+      showToast(data.message || 'تم تغيير كلمة المرور بنجاح', 'success');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (err: any) {
+      showToast(err.message || 'حدث خطأ أثناء تغيير كلمة المرور', 'error');
+    } finally {
+      setIsChangingPassword(false);
     }
   };
 
@@ -211,6 +255,67 @@ export default function SettingsView() {
                 className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               />
             </div>
+          </div>
+        </div>
+
+        {/* Card 3: Change Password */}
+        <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <Lock className="w-4 h-4 text-amber-600" />
+            <span>تغيير كلمة المرور لحساب المدير (admin)</span>
+          </h3>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                كلمة المرور الحالية
+              </label>
+              <input
+                type="password"
+                placeholder="••••••••"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                كلمة المرور الجديدة
+              </label>
+              <input
+                type="password"
+                placeholder="أدخل كلمة المرور الجديدة"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                تأكيد كلمة المرور الجديدة
+              </label>
+              <input
+                type="password"
+                placeholder="أعد إدخال كلمة المرور"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end pt-2">
+            <button
+              type="button"
+              onClick={handleChangePassword}
+              disabled={isChangingPassword || !newPassword}
+              className="flex items-center gap-2 px-5 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-md shadow-amber-950/20 transition-all active:scale-95 disabled:opacity-50"
+            >
+              <KeyRound className="w-4 h-4" />
+              <span>{isChangingPassword ? 'جاري التحديث...' : 'تحديث كلمة المرور'}</span>
+            </button>
           </div>
         </div>
 

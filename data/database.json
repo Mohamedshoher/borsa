@@ -29,7 +29,7 @@
       "email": null,
       "join_date": "2026-09-14",
       "join_time": "10:00",
-      "management_fee_rate": 2,
+      "management_fee_rate": 1,
       "status": "active",
       "notes": null,
       "user_id": "usr_1789363849907_pl9j",
@@ -118,6 +118,73 @@
     }
   ],
   "audit_logs": [
+    {
+      "id": "aud_1789364224414_49c1gu",
+      "user_id": "usr_admin_01",
+      "user_name": "محمد مصطفى شكر (المدير)",
+      "user_role": "admin",
+      "action": "UPDATE",
+      "entity_type": "partner",
+      "entity_id": "prt_1789363849907_dadc",
+      "old_data": {
+        "id": "prt_1789363849907_dadc",
+        "full_name": "انعام",
+        "phone": "010641164676",
+        "email": null,
+        "join_date": "2026-09-14",
+        "join_time": "10:00",
+        "management_fee_rate": 2,
+        "status": "active",
+        "notes": null,
+        "user_id": "usr_1789363849907_pl9j",
+        "created_at": "2026-09-14T05:30:49.907Z"
+      },
+      "new_data": {
+        "id": "prt_1789363849907_dadc",
+        "full_name": "انعام",
+        "phone": "010641164676",
+        "email": null,
+        "join_date": "2026-09-14",
+        "join_time": "10:00",
+        "management_fee_rate": 1,
+        "status": "active",
+        "notes": null,
+        "user_id": "usr_1789363849907_pl9j",
+        "created_at": "2026-09-14T05:30:49.907Z"
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-09-14T05:37:04.414Z"
+    },
+    {
+      "id": "aud_1789364184695_6416rt",
+      "user_id": "usr_admin_01",
+      "user_name": "محمد مصطفى شكر (المدير)",
+      "user_role": "admin",
+      "action": "LOGIN",
+      "entity_type": "auth",
+      "entity_id": "usr_admin_01",
+      "old_data": null,
+      "new_data": {
+        "username": "admin"
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-09-14T05:36:24.695Z"
+    },
+    {
+      "id": "aud_1789364141664_tsxi18",
+      "user_id": "usr_1789363849907_pl9j",
+      "user_name": "انعام",
+      "user_role": "partner",
+      "action": "LOGIN",
+      "entity_type": "auth",
+      "entity_id": "usr_1789363849907_pl9j",
+      "old_data": null,
+      "new_data": {
+        "username": "partner_678"
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-09-14T05:35:41.664Z"
+    },
     {
       "id": "aud_1789363849914_pr2uu8",
       "user_id": "usr_admin_01",
