@@ -27,7 +27,7 @@ export default function SettingsView() {
   const [managerName, setManagerName] = useState('');
   const [currency, setCurrency] = useState('EGP');
   const [currencySymbol, setCurrencySymbol] = useState('ج.م');
-  const [feeRate, setFeeRate] = useState(2.0);
+  const [feeRate, setFeeRate] = useState(1.0);
   const [feeBasis, setFeeBasis] = useState('VALUATION');
   const [monthStartDay, setMonthStartDay] = useState(1);
   const [notifEnabled, setNotifEnabled] = useState(true);
@@ -223,7 +223,7 @@ export default function SettingsView() {
                   max="100"
                   required
                   value={feeRate}
-                  onChange={(e) => setFeeRate(parseFloat(e.target.value) || 2.0)}
+                  onChange={(e) => setFeeRate(parseFloat(e.target.value) ?? 1.0)}
                   className="w-full pl-8 pr-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
                 <span className="absolute left-3 top-2.5 text-xs font-bold text-slate-400">%</span>

@@ -4,7 +4,7 @@ import { AuditLog } from './types';
 export function recordAuditLog(
   user: { id: string; full_name: string; role: string } | null,
   action: 'CREATE' | 'UPDATE' | 'DELETE' | 'LOGIN' | 'CALCULATE' | 'APPROVE' | 'REJECT' | 'REVERSE',
-  entity_type: 'partner' | 'portfolio' | 'transaction' | 'withdrawal_request' | 'fee' | 'settings' | 'auth',
+  entity_type: 'partner' | 'portfolio' | 'transaction' | 'withdrawal_request' | 'fee' | 'settings' | 'auth' | 'fund',
   entity_id: string | null,
   old_data: any,
   new_data: any,

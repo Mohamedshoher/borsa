@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb, saveDatabase } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
-import { recordTransaction, recalculatePortfolio } from '@/lib/financial';
+import { applyFundValuation, refreshPortfolios, round2 } from '@/lib/financial';
 import { recordAuditLog } from '@/lib/audit';
-import { PortfolioValuation } from '@/lib/types';
 
 export async function GET(req: NextRequest) {
   try {
@@ -41,120 +40,83 @@ export async function GET(req: NextRequest) {
   }
 }
 
+// POST: record profit/loss for the WHOLE fund. It is shared by every partner in proportion to
+// their units, and applies only to the money that is working (idle cash is not affected).
+// Send either `new_invested_value` (current market value of the working money)
+// or `change_percentage` (e.g. 5 or -6).
 export async function POST(req: NextRequest) {
   try {
     const user = getUserFromRequest(req);
     if (!user || user.role !== 'admin') {
-      return NextResponse.json({ error: 'صلاحية المدير مطلوبة لتحديث تقييم المحافظ' }, { status: 403 });
+      return NextResponse.json({ error: 'صلاحية المدير مطلوبة لتحديث تقييم المحفظة' }, { status: 403 });
     }
 
     const body = await req.json();
-    const { partner_id, new_valuation, valuation_date, valuation_time, reason, notes } = body;
-
-    if (!partner_id || new_valuation === undefined) {
-      return NextResponse.json({ error: 'معرف الشريك والقيمة الجديدة مطلوبان' }, { status: 400 });
-    }
-
-    const parsedValuation = parseFloat(new_valuation);
-    if (isNaN(parsedValuation) || parsedValuation < 0) {
-      return NextResponse.json({ error: 'يرجى إدخال قيمة صحيحة للمحفظة' }, { status: 400 });
-    }
+    const { new_invested_value, change_percentage, valuation_date, valuation_time, reason, notes } = body;
 
     const db = getDb();
-    const partner = db.partners.find((p) => p.id === partner_id);
-    const portfolio = db.portfolios.find((pf) => pf.partner_id === partner_id);
+    const previousInvested = db.fund.invested_value;
 
-    if (!partner || !portfolio) {
-      return NextResponse.json({ error: 'الشريك أو المحفظة غير موجودة' }, { status: 404 });
+    let target: number;
+    if (new_invested_value !== undefined && new_invested_value !== '') {
+      target = parseFloat(new_invested_value);
+    } else if (change_percentage !== undefined && change_percentage !== '') {
+      target = round2(previousInvested * (1 + parseFloat(change_percentage) / 100));
+    } else {
+      return NextResponse.json({ error: 'أدخل القيمة الجديدة للأموال المستثمرة أو نسبة التغير' }, { status: 400 });
+    }
+    if (isNaN(target) || target < 0) {
+      return NextResponse.json({ error: 'يرجى إدخال قيمة صحيحة' }, { status: 400 });
     }
 
-    const previousValuation = portfolio.current_valuation;
-    const changeAmount = Math.round((parsedValuation - previousValuation) * 100) / 100;
+    const now = new Date();
+    const dateStr = valuation_date || now.toISOString().split('T')[0];
+    const timeStr = valuation_time || now.toTimeString().split(' ')[0].substring(0, 5);
 
-    if (changeAmount === 0) {
-      return NextResponse.json({ error: 'القيمة الجديدة مطابقة للقيمة الحالية تماماً، لا يوجد تغير لتسجيله' }, { status: 400 });
+    let result;
+    try {
+      result = applyFundValuation(db, target, { date: dateStr, time: timeStr, reason, notes, user });
+    } catch (e: any) {
+      return NextResponse.json({ error: e.message }, { status: 400 });
     }
 
-    const changePercentage = previousValuation > 0
-      ? Math.round((changeAmount / previousValuation) * 10000) / 100
-      : 0;
-
-    const valuationType: 'PROFIT' | 'LOSS' = changeAmount > 0 ? 'PROFIT' : 'LOSS';
-    const txnType = valuationType; // 'PROFIT' or 'LOSS'
-
-    const dateStr = valuation_date || new Date().toISOString().split('T')[0];
-    const timeStr = valuation_time || new Date().toTimeString().split(' ')[0].substring(0, 5);
-    const now = new Date().toISOString();
-
-    // 1. Record Transaction in Master Ledger
-    const txn = recordTransaction({
-      partnerId: partner_id,
-      portfolioId: portfolio.id,
-      type: txnType,
-      amount: changeAmount, // positive for profit, negative for loss
-      date: dateStr,
-      time: timeStr,
-      balanceBefore: previousValuation,
-      balanceAfter: parsedValuation,
-      createdById: user.id,
-      paymentMethod: valuationType === 'PROFIT' ? 'أرباح استثمار وتداول' : 'خسائر استثمار وتداول',
-      notes: notes || `تحديث تقييم المحفظة: ${reason || (valuationType === 'PROFIT' ? 'أرباح محققة' : 'خسائر سوقية')}`,
-    });
-
-    // 2. Record Portfolio Valuation History
-    const valId = `val_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
-    const newRecord: PortfolioValuation = {
-      id: valId,
-      partner_id,
-      portfolio_id: portfolio.id,
-      transaction_id: txn.id,
-      previous_valuation: previousValuation,
-      new_valuation: parsedValuation,
-      change_amount: changeAmount,
-      change_percentage: changePercentage,
-      valuation_date: dateStr,
-      valuation_time: timeStr,
-      valuation_type: valuationType,
-      reason: reason || (valuationType === 'PROFIT' ? 'أرباح تداول دورية' : 'تراجع في التقييم السوقي'),
-      notes: notes || null,
-      created_by: user.id,
-      created_at: now,
-    };
-
-    db.portfolio_valuations.unshift(newRecord);
+    refreshPortfolios(db);
     saveDatabase(db);
 
-    // 3. Recalculate Portfolio
-    const updatedPortfolio = recalculatePortfolio(partner_id);
-
-    // 4. Audit Log
     recordAuditLog(
       user,
       'UPDATE',
-      'portfolio',
-      valId,
-      { previous_valuation: previousValuation },
-      { new_valuation: parsedValuation, change_amount: changeAmount, change_percentage: changePercentage }
+      'fund',
+      result.batchId,
+      { invested_value: previousInvested },
+      { invested_value: target, change_amount: result.changeAmount, change_percentage: result.changePercentage }
     );
 
-    // 5. Partner Notification
-    db.notifications.unshift({
-      id: `notif_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-      user_id: partner.user_id || 'system',
-      partner_id: partner.id,
-      title: valuationType === 'PROFIT' ? 'تم تسجيل أرباح جديدة في محفظتك' : 'تم تحديث تقييم محفظتك',
-      message: `تم تحديث قيمة محفظتك إلى ${parsedValuation} ج.م (${changeAmount > 0 ? '+' : ''}${changeAmount} ج.م | ${changePercentage}%) بتاريخ ${dateStr}.`,
-      type: valuationType === 'PROFIT' ? 'SUCCESS' : 'WARNING',
-      is_read: 0,
-      created_at: now,
-    });
+    const isProfit = result.changeAmount > 0;
+    const stamp = new Date().toISOString();
+    for (const partner of db.partners) {
+      const pf = db.portfolios.find((p) => p.partner_id === partner.id);
+      if (partner.is_manager || !pf || (pf.units || 0) <= 0) continue;
+      const share = db.portfolio_valuations.find((v) => v.batch_id === result.batchId && v.partner_id === partner.id);
+      db.notifications.unshift({
+        id: `notif_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        user_id: partner.user_id || 'system',
+        partner_id: partner.id,
+        title: isProfit ? 'تم تسجيل أرباح جديدة في المحفظة' : 'تم تحديث تقييم المحفظة',
+        message: `تغيّرت الأموال العاملة بنسبة ${result.changePercentage}%. نصيبك: ${share && share.change_amount > 0 ? '+' : ''}${share?.change_amount ?? 0} ج.م، وقيمة حصتك الآن ${pf.current_valuation} ج.م.`,
+        type: isProfit ? 'SUCCESS' : 'WARNING',
+        is_read: 0,
+        created_at: stamp,
+      });
+    }
     saveDatabase(db);
 
     return NextResponse.json({
       success: true,
-      message: `تم تحديث قيمة المحفظة وتسجيل ${valuationType === 'PROFIT' ? 'الأرباح' : 'الخسائر'} بنجاح`,
-      valuation: newRecord,
-      portfolio: updatedPortfolio,
+      message: `تم توزيع ${isProfit ? 'الأرباح' : 'الخسائر'} (${result.changePercentage}% على الأموال العاملة) على جميع الشركاء بنسبة حصصهم`,
+      change_amount: result.changeAmount,
+      change_percentage: result.changePercentage,
+      fund: db.fund,
     });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

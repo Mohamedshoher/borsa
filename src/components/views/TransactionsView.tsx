@@ -166,8 +166,8 @@ export default function TransactionsView({ openReverseModal }: TransactionsViewP
               <option value="WITHDRAWAL">سحب</option>
               <option value="PROFIT">أرباح استثمار</option>
               <option value="LOSS">خسائر استثمار</option>
-              <option value="INITIAL_MGMT_FEE">أتعاب بداية الاستثمار (2%)</option>
-              <option value="MONTHLY_MGMT_FEE">أتعاب شهرية (2%)</option>
+              <option value="INITIAL_MGMT_FEE">أتعاب بداية الاستثمار (قديمة)</option>
+              <option value="MONTHLY_MGMT_FEE">أتعاب شهرية</option>
               <option value="SETTLEMENT">تسوية محاسبية</option>
               <option value="REVERSAL">عكس عملية (تصحيح)</option>
             </select>

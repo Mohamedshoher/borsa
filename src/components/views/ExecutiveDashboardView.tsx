@@ -261,7 +261,7 @@ export default function ExecutiveDashboardView({
         {/* Card 4: Management Fees Total */}
         <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-slate-500 dark:text-slate-400">أتعاب الإدارة (2%)</span>
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400">أتعاب الإدارة</span>
             <div className="p-2 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400">
               <Percent className="w-4 h-4" />
             </div>
@@ -422,7 +422,7 @@ export default function ExecutiveDashboardView({
                 <th className="p-3.5">الإيداعات / السحوبات</th>
                 <th className="p-3.5">القيمة الحالية للمحفظة</th>
                 <th className="p-3.5">صافي الأرباح / العائد</th>
-                <th className="p-3.5">أتعاب الإدارة (2%)</th>
+                <th className="p-3.5">أتعاب الإدارة</th>
                 <th className="p-3.5">صافي القيمة</th>
                 <th className="p-3.5 rounded-l-2xl text-center">إجراءات</th>
               </tr>

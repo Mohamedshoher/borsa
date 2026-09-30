@@ -43,7 +43,7 @@ export default function PartnersView({ openAddPartnerModal, openValuationModal }
   const [editName, setEditName] = useState('');
   const [editPhone, setEditPhone] = useState('');
   const [editEmail, setEditEmail] = useState('');
-  const [editFeeRate, setEditFeeRate] = useState(2.0);
+  const [editFeeRate, setEditFeeRate] = useState(1.0);
   const [editNotes, setEditNotes] = useState('');
   const [editPassword, setEditPassword] = useState('');
   const [isSavingEdit, setIsSavingEdit] = useState(false);
@@ -99,7 +99,7 @@ export default function PartnersView({ openAddPartnerModal, openValuationModal }
     setEditName(p.full_name);
     setEditPhone(p.phone);
     setEditEmail(p.email || '');
-    setEditFeeRate(p.management_fee_rate !== undefined ? p.management_fee_rate : 2.0);
+    setEditFeeRate(p.management_fee_rate !== undefined ? p.management_fee_rate : 1.0);
     setEditNotes(p.notes || '');
     setEditPassword('');
   };
@@ -250,7 +250,7 @@ export default function PartnersView({ openAddPartnerModal, openValuationModal }
                           @{partner.username || 'user'}
                         </span>
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
-                          أتعاب الإدارة: {feeRate}%
+                          {partner.is_manager ? 'حساب المدير - يستقبل الأتعاب' : `أتعاب شهرية: ${feeRate}%`}
                         </span>
                       </div>
                     </div>
@@ -349,7 +349,7 @@ export default function PartnersView({ openAddPartnerModal, openValuationModal }
                   </button>
 
                   {/* Delete Button (highlighted when suspended or available) */}
-                  <button
+                  {!partner.is_manager && <button
                     onClick={() => setDeletingPartner(partner)}
                     className={`p-2 rounded-xl transition-colors ${
                       !isActive
@@ -359,7 +359,7 @@ export default function PartnersView({ openAddPartnerModal, openValuationModal }
                     title={!isActive ? 'حذف الشريك الموقوف نهائياً' : 'حذف الشريك'}
                   >
                     <Trash2 className="w-4 h-4" />
-                  </button>
+                  </button>}
                 </div>
               </div>
             );

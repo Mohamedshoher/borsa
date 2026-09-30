@@ -52,26 +52,6 @@ export default function ManagementFeesView({ openFeeModal }: ManagementFeesViewP
     fetchFees();
   }, [refreshKey]);
 
-  const markFeeCollected = async (feeId: string) => {
-    try {
-      const res = await fetch('/api/management-fees', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fee_id: feeId,
-          status: 'collected',
-          collection_date: new Date().toISOString().split('T')[0],
-        }),
-      });
-      if (res.ok) {
-        showToast('تم تحصيل الأتعاب وتحديث رصيد المحفظة بنجاح', 'success');
-        triggerRefresh();
-      }
-    } catch (e) {
-      showToast('فشل تحديث حالة الأتعاب', 'error');
-    }
-  };
-
   // Extract distinct available periods sorted chronologically descending
   const availablePeriods = Array.from(new Set(fees.map((f) => f.period_month))).sort((a, b) => {
     if (a === 'INITIAL') return 1;
@@ -100,9 +80,9 @@ export default function ManagementFeesView({ openFeeModal }: ManagementFeesViewP
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">أتعاب إدارة المحفظة (2%)</h1>
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">أتعاب إدارة المحفظة (شهرية)</h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            متابعة واحتساب أتعاب الإدارة لكل شهر على حدة وتتبع المستحق والمحصل بدقة.
+            تُخصم النسبة المحددة لكل شريك من حصته وتُضاف تلقائياً إلى رأس مال المدير، دون أي تحصيل يدوي.
           </p>
         </div>
 
@@ -345,16 +325,9 @@ export default function ManagementFeesView({ openFeeModal }: ManagementFeesViewP
 
                       {user?.role === 'admin' && (
                         <td className="p-3.5 text-center">
-                          {!isCollected ? (
-                            <button
-                              onClick={() => markFeeCollected(fee.id)}
-                              className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] shadow-sm transition-all"
-                            >
-                              تسجيل التحصيل
-                            </button>
-                          ) : (
-                            <span className="text-[10px] text-slate-400">تم السداد</span>
-                          )}
+                          <span className="text-[10px] text-slate-400">
+                            {fee.units_transferred ? `${fee.units_transferred} حصة → رأس مال المدير` : 'أتعاب قديمة'}
+                          </span>
                         </td>
                       )}
                     </tr>
