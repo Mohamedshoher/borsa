@@ -41,6 +41,7 @@ export default function ValuationModal({ isOpen, onClose, partners }: ValuationM
         setInvested(d.fund.invested_value);
         setIdle(d.fund.idle_cash);
         setNewValue(String(d.fund.invested_value));
+        setTotalInput(String(Math.round((d.fund.invested_value + d.fund.idle_cash) * 100) / 100));
         setPercentInput('0');
       })
       .catch(() => showToast('تعذر تحميل بيانات المحفظة', 'error'));
@@ -50,16 +51,37 @@ export default function ValuationModal({ isOpen, onClose, partners }: ValuationM
 
   const round2 = (n: number) => Math.round(n * 100) / 100;
 
+  // Three synced inputs: % change, value of the working money, total value of the portfolio.
+  // Idle cash never changes with profit/loss, so total = invested + idle.
+  const [totalInput, setTotalInput] = useState('');
+
+  const syncFromInvested = (inv: number) => {
+    setNewValue(String(inv));
+    setTotalInput(String(round2(inv + idle)));
+    setPercentInput(invested > 0 ? String(round2(((inv - invested) / invested) * 100)) : '');
+  };
+
   const onValueChange = (v: string) => {
     setNewValue(v);
     const parsed = parseFloat(v);
+    setTotalInput(!isNaN(parsed) ? String(round2(parsed + idle)) : '');
     setPercentInput(!isNaN(parsed) && invested > 0 ? String(round2(((parsed - invested) / invested) * 100)) : '');
+  };
+
+  const onTotalChange = (v: string) => {
+    setTotalInput(v);
+    const parsed = parseFloat(v);
+    if (!isNaN(parsed)) syncFromInvested(round2(parsed - idle));
   };
 
   const onPercentChange = (v: string) => {
     setPercentInput(v);
     const pct = parseFloat(v);
-    if (!isNaN(pct)) setNewValue(String(round2(invested * (1 + pct / 100))));
+    if (!isNaN(pct)) {
+      const inv = round2(invested * (1 + pct / 100));
+      setNewValue(String(inv));
+      setTotalInput(String(round2(inv + idle)));
+    }
   };
 
   const parsedNew = parseFloat(newValue);
@@ -152,7 +174,7 @@ export default function ValuationModal({ isOpen, onClose, partners }: ValuationM
               <span>الأموال الشغّالة فقط تتأثر بالربح والخسارة (السيولة لا تتأثر)</span>
             </span>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
                 <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">نسبة التغير % (ربح + / خسارة -)</label>
                 <input
@@ -164,7 +186,18 @@ export default function ValuationModal({ isOpen, onClose, partners }: ValuationM
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">القيمة الحالية للأموال الشغّالة</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">القيمة الكلية للمحفظة</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={totalInput}
+                  onChange={(e) => onTotalChange(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold text-sm font-financial focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">قيمة الأموال المستثمرة</label>
                 <input
                   type="number"
                   step="0.01"
