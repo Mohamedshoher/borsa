@@ -19,7 +19,8 @@ export interface Partner {
   email: string | null;
   join_date: string;
   join_time: string;
-  management_fee_rate: number; // default 2.0, can be customized per partner
+  management_fee_rate: number; // monthly fee % charged on this partner's share, set per partner (default 1.0)
+  is_manager?: boolean; // the manager's own account: receives the fees, pays none
   status: UserStatus;
   notes: string | null;
   user_id: string | null;
@@ -42,6 +43,12 @@ export interface Portfolio {
   fees_paid: number;
   fees_due: number;
   net_value: number;
+  // Pooled-fund model: the portfolio is a holding of units in the shared fund
+  units?: number;              // number of fund units held
+  ownership_pct?: number;      // share of the whole fund (0-100)
+  invested_value?: number;     // this partner's share of the money currently working
+  idle_value?: number;         // this partner's share of the money sitting as cash
+  fees_received?: number;      // (manager only) value of fees credited by other partners
   last_valuation_date: string;
   updated_at: string;
   // Join fields:
@@ -76,6 +83,7 @@ export interface Transaction {
   payment_method?: string | null;
   reference_no?: string | null;
   notes?: string | null;
+  units?: number; // fund units issued (+) or redeemed (-) by this transaction
   is_reversed: number; // 0 or 1
   reversed_by_txn_id?: string | null;
   created_at: string;
@@ -137,8 +145,17 @@ export interface WithdrawalRequest {
   current_valuation?: number;
 }
 
+export interface Fund {
+  total_units: number;
+  invested_value: number; // money currently working in the market
+  idle_cash: number;      // money in the wallet, not invested
+  last_valuation_date: string;
+}
+
 export interface PortfolioValuation {
   id: string;
+  batch_id?: string | null; // groups the per-partner rows of one fund valuation
+  ownership_pct?: number;
   partner_id: string;
   portfolio_id: string;
   transaction_id: string | null;
@@ -170,6 +187,8 @@ export interface ManagementFee {
   portfolio_value_at_calc: number;
   fee_percentage: number; // default 2.0 or custom partner rate
   fee_amount: number;
+  units_transferred?: number;      // units moved from the payer to the manager
+  manager_partner_id?: string | null;
   status: FeeStatus;
   calculation_date: string;
   collection_date: string | null;
@@ -185,7 +204,7 @@ export interface AuditLog {
   user_name: string;
   user_role: string;
   action: 'CREATE' | 'UPDATE' | 'DELETE' | 'LOGIN' | 'CALCULATE' | 'APPROVE' | 'REJECT' | 'REVERSE';
-  entity_type: 'partner' | 'portfolio' | 'transaction' | 'withdrawal_request' | 'fee' | 'settings' | 'auth' | 'system';
+  entity_type: 'partner' | 'portfolio' | 'transaction' | 'withdrawal_request' | 'fee' | 'settings' | 'auth' | 'system' | 'fund';
   entity_id: string | null;
   old_data: any;
   new_data: any;
@@ -209,7 +228,7 @@ export interface SystemSettings {
   manager_name: string;
   currency: string;
   currency_symbol: string;
-  default_mgmt_fee_rate: number;
+  default_mgmt_fee_rate: number; // default monthly fee % for new partners
   mgmt_fee_basis: string;
   accounting_month_start_day: number;
   notifications_enabled: boolean;

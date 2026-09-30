@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { formatCurrency, formatPercent, formatDate, getTransactionTypeLabel } from '@/lib/utils';
 import { Partner, Portfolio, Transaction, WithdrawalRequest } from '@/lib/types';
+import FundPanel from '@/components/FundPanel';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface PartnerPortalProps {
@@ -145,6 +146,8 @@ export default function PartnerPortalView({ openWithdrawalReqModal }: PartnerPor
         </div>
       </div>
 
+      <FundPanel />
+
       {/* 6 Key Financial Metric Cards for Partner */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         {/* Card 1: Current Valuation */}
@@ -159,7 +162,7 @@ export default function PartnerPortalView({ openWithdrawalReqModal }: PartnerPor
             {formatCurrency(currentVal)}
           </div>
           <div className="mt-2 text-[11px] text-slate-400">
-            شاملة كافة الأرباح والإيداعات
+            حصتك {(pf?.ownership_pct || 0).toFixed(2)}% من المحفظة المشتركة
           </div>
         </div>
 
@@ -214,7 +217,7 @@ export default function PartnerPortalView({ openWithdrawalReqModal }: PartnerPor
         {/* Card 5: Management Fees */}
         <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-slate-500">أتعاب الإدارة (2%)</span>
+            <span className="text-xs font-bold text-slate-500">أتعاب الإدارة</span>
             <div className="p-2 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600">
               <Percent className="w-4 h-4" />
             </div>

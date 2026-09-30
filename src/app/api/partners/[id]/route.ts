@@ -33,7 +33,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json({
       partner: {
         ...partner,
-        management_fee_rate: partner.management_fee_rate || 2.0,
+        management_fee_rate: partner.management_fee_rate ?? 1.0,
         portfolio,
         username: linkedUser?.username || '',
       },
@@ -73,7 +73,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     if (status) db.partners[pIndex].status = status;
     if (management_fee_rate !== undefined) {
       const parsedRate = parseFloat(management_fee_rate);
-      if (!isNaN(parsedRate) && parsedRate >= 0) {
+      if (!isNaN(parsedRate) && parsedRate >= 0 && !db.partners[pIndex].is_manager) {
         db.partners[pIndex].management_fee_rate = parsedRate;
       }
     }
@@ -125,6 +125,16 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     }
 
     const partnerToDelete = db.partners[pIndex];
+
+    if (partnerToDelete.is_manager) {
+      return NextResponse.json({ error: 'لا يمكن حذف حساب المدير' }, { status: 400 });
+    }
+    const holding = db.portfolios.find((pf) => pf.partner_id === partnerId);
+    if ((holding?.units || 0) > 0) {
+      return NextResponse.json({
+        error: `للشريك حصة في المحفظة بقيمة ${holding?.current_valuation} ج.م. سجّل سحباً كاملاً لها أولاً قبل الحذف حتى لا تضيع حصته أو تتغير حصص باقي الشركاء`,
+      }, { status: 400 });
+    }
 
     // Remove partner
     db.partners.splice(pIndex, 1);

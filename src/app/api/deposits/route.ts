@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb, saveDatabase } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
-import { recordTransaction, recalculatePortfolio } from '@/lib/financial';
+import { recordTransaction, recalculatePortfolio, contributeToFund, getNav, round2 } from '@/lib/financial';
 import { recordAuditLog } from '@/lib/audit';
 import { Deposit } from '@/lib/types';
 
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { partner_id, amount, deposit_date, deposit_time, payment_method, reference_no, notes } = body;
+    const { partner_id, amount, deposit_date, deposit_time, payment_method, reference_no, notes, invest_now } = body;
 
     if (!partner_id || !amount || !payment_method) {
       return NextResponse.json({ error: 'الشريك والمبلغ وطريقة الدفع حقول إلزامية' }, { status: 400 });
@@ -65,8 +65,10 @@ export async function POST(req: NextRequest) {
     const timeStr = deposit_time || new Date().toTimeString().split(' ')[0].substring(0, 5);
     const now = new Date().toISOString();
 
-    const balanceBefore = portfolio.current_valuation;
-    const balanceAfter = balanceBefore + numAmount;
+    const balanceBefore = round2((portfolio.units || 0) * getNav(db));
+    const balanceAfter = round2(balanceBefore + numAmount);
+    // Issue units at the current unit price; other partners' values stay untouched
+    const { units } = contributeToFund(db, partner_id, numAmount, Boolean(invest_now));
 
     // 1. Record Transaction
     const txn = recordTransaction({
@@ -79,6 +81,7 @@ export async function POST(req: NextRequest) {
       balanceBefore,
       balanceAfter,
       createdById: user.id,
+      units,
       paymentMethod: payment_method,
       referenceNo: reference_no,
       notes: notes || 'إيداع إضافي في المحفظة',

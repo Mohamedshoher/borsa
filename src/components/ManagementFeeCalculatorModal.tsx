@@ -25,12 +25,12 @@ export default function ManagementFeeCalculatorModal({
   const [periodMonth, setPeriodMonth] = useState(currentYearMonth);
   const [partnerMode, setPartnerMode] = useState<'ALL' | string>('ALL');
   const [usePartnerCustomRate, setUsePartnerCustomRate] = useState(true);
-  const [globalFeeRate, setGlobalFeeRate] = useState(systemSettings?.default_mgmt_fee_rate || 2.0);
+  const [globalFeeRate, setGlobalFeeRate] = useState(systemSettings?.default_mgmt_fee_rate ?? 1.0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
 
-  const activePartners = partners.filter((p) => p.status === 'active');
+  const activePartners = partners.filter((p) => p.status === 'active' && !p.is_manager);
   const targetPartners = partnerMode === 'ALL' ? activePartners : activePartners.filter((p) => p.id === partnerMode);
 
   // Compute preview and check duplicates
@@ -177,7 +177,7 @@ export default function ManagementFeeCalculatorModal({
                 <option value="ALL">احتساب جماعي لكافة الشركاء النشطين ({activePartners.length} شريك)</option>
                 {activePartners.map((p) => (
                   <option key={p.id} value={p.id}>
-                    شريك محدد: {p.full_name} (النسبة: {p.management_fee_rate || 2.0}% | التقييم: {formatCurrency(p.portfolio?.current_valuation)})
+                    شريك محدد: {p.full_name} (النسبة: {p.management_fee_rate ?? 1.0}% | التقييم: {formatCurrency(p.portfolio?.current_valuation)})
                   </option>
                 ))}
               </select>

@@ -39,7 +39,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }: SidebarProps) {
     { id: 'transactions', label: 'سجل القيود والعمليات', icon: ReceiptText },
     { id: 'deposits_withdrawals', label: 'الإيداعات والسحوبات', icon: Coins },
     { id: 'withdrawal_requests', label: 'طلبات السحب', icon: ArrowUpFromLine },
-    { id: 'management_fees', label: 'أتعاب الإدارة (2%)', icon: Percent },
+    { id: 'management_fees', label: 'أتعاب الإدارة الشهرية', icon: Percent },
     { id: 'statement', label: 'كشف حساب شريك', icon: FileText },
     { id: 'reports', label: 'التقارير والتصدير (Excel/PDF)', icon: FileSpreadsheet },
     { id: 'audit', label: 'سجل التدقيق والمراقبة', icon: ShieldAlert },

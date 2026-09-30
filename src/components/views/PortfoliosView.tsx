@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { formatCurrency, formatPercent, formatDate } from '@/lib/utils';
 import { Portfolio, PortfolioValuation } from '@/lib/types';
+import FundPanel from '@/components/FundPanel';
 
 interface PortfoliosViewProps {
   openValuationModal: (partnerId?: string) => void;
@@ -71,7 +72,7 @@ export default function PortfoliosView({ openValuationModal }: PortfoliosViewPro
         <div>
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">المحافظ الاستثمارية</h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            متابعة القيمة السوقية، نسب الربحية، الأتعاب المحتسبة، وتحديث التقييم الدوري.
+            محفظة مشتركة: الأرباح والخسائر تتوزع على كل الشركاء بنسبة حصصهم في الأموال الشغّالة.
           </p>
         </div>
 
@@ -80,9 +81,11 @@ export default function PortfoliosView({ openValuationModal }: PortfoliosViewPro
           className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg shadow-emerald-950/20 transition-all active:scale-95"
         >
           <Calculator className="w-4 h-4" />
-          <span>تحديث تقييم محفظة</span>
+          <span>تسجيل ربح / خسارة المحفظة</span>
         </button>
       </div>
+
+      <FundPanel />
 
       {/* Search */}
       <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-3">
@@ -107,7 +110,7 @@ export default function PortfoliosView({ openValuationModal }: PortfoliosViewPro
                 <th className="p-3.5">الإيداعات / السحوبات</th>
                 <th className="p-3.5">القيمة الحالية للمحفظة</th>
                 <th className="p-3.5">صافي الأرباح المحققة</th>
-                <th className="p-3.5">أتعاب الإدارة (2%)</th>
+                <th className="p-3.5">أتعاب مدفوعة</th>
                 <th className="p-3.5">صافي القيمة المتاحة</th>
                 <th className="p-3.5">آخر تقييم</th>
                 <th className="p-3.5 rounded-l-2xl text-center">إجراءات</th>

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb, saveDatabase } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
-import { recordTransaction, recalculatePortfolio } from '@/lib/financial';
+import { recordTransaction, recalculatePortfolio, contributeToFund } from '@/lib/financial';
 import { recordAuditLog } from '@/lib/audit';
-import { Partner, Portfolio, User, ManagementFee } from '@/lib/types';
+import { Partner, Portfolio, User } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
       const linkedUser = db.users.find((u) => u.id === p.user_id);
       return {
         ...p,
-        management_fee_rate: p.management_fee_rate || 2.0,
+        management_fee_rate: p.management_fee_rate ?? 1.0,
         portfolio,
         username: linkedUser?.username || '',
       };
@@ -83,9 +83,8 @@ export async function POST(req: NextRequest) {
       password,
       notes,
       payment_method,
-      calculate_initial_fee = true,
-      initial_fee_rate = 2.0,
       management_fee_rate,
+      invest_now = true,
     } = body;
 
     if (!full_name || !phone || !initial_capital || !join_date || !username || !password) {
@@ -97,9 +96,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'مبلغ الاستثمار يجب أن يكون أكبر من الصفر' }, { status: 400 });
     }
 
-    const partnerFeeRate = parseFloat(management_fee_rate !== undefined ? management_fee_rate : initial_fee_rate) || 2.0;
-
     const db = getDb();
+    const partnerFeeRate = management_fee_rate !== undefined && management_fee_rate !== '' ? parseFloat(management_fee_rate) : (db.system_settings.default_mgmt_fee_rate ?? 1);
+    if (isNaN(partnerFeeRate) || partnerFeeRate < 0) {
+      return NextResponse.json({ error: 'نسبة الأتعاب الشهرية غير صحيحة' }, { status: 400 });
+    }
 
     // Check if username already taken
     const existingUser = db.users.find((u) => u.username.toLowerCase() === username.trim().toLowerCase());
@@ -143,10 +144,7 @@ export async function POST(req: NextRequest) {
     };
     db.partners.push(newPartner);
 
-    // 3. Create Portfolio
-    const initialFeeAmount = calculate_initial_fee ? Math.round(capital * (partnerFeeRate / 100) * 100) / 100 : 0;
-    const initialValuation = capital;
-
+    // 3. Create Portfolio: the partner buys units of the shared fund at the current unit price
     const newPortfolio: Portfolio = {
       id: portfolioId,
       partner_id: partnerId,
@@ -155,19 +153,21 @@ export async function POST(req: NextRequest) {
       total_withdrawals: 0,
       total_profits: 0,
       total_losses: 0,
-      current_valuation: initialValuation,
-      total_fees_incurred: initialFeeAmount,
-      fees_paid: initialFeeAmount,
+      current_valuation: 0,
+      total_fees_incurred: 0,
+      fees_paid: 0,
       fees_due: 0,
-      net_value: initialValuation,
+      net_value: 0,
+      units: 0,
       last_valuation_date: dateStr,
       updated_at: now,
     };
     db.portfolios.push(newPortfolio);
+    const { units } = contributeToFund(db, partnerId, capital, Boolean(invest_now));
     saveDatabase(db);
 
     // 4. Record Initial Investment Transaction
-    const initTxn = recordTransaction({
+    recordTransaction({
       partnerId,
       portfolioId,
       type: 'INITIAL_INVESTMENT',
@@ -177,47 +177,10 @@ export async function POST(req: NextRequest) {
       balanceBefore: 0,
       balanceAfter: capital,
       createdById: user.id,
+      units,
       paymentMethod: payment_method || 'تحويل بنكي / نقدي',
       notes: notes || 'رأس المال الابتدائي لبداية الاستثمار في البورصة',
     });
-
-    // 5. Record Initial Management Fee Transaction
-    let feeTxn = null;
-    if (calculate_initial_fee && initialFeeAmount > 0) {
-      feeTxn = recordTransaction({
-        partnerId,
-        portfolioId,
-        type: 'INITIAL_MGMT_FEE',
-        amount: -initialFeeAmount,
-        date: dateStr,
-        time: timeStr,
-        balanceBefore: capital,
-        balanceAfter: capital - initialFeeAmount,
-        createdById: user.id,
-        paymentMethod: 'خصم من الحساب',
-        notes: `أتعاب إدارة - بداية الاستثمار (${partnerFeeRate}% من ${capital} ج.م)`,
-      });
-
-      const initialFeeRecord: ManagementFee = {
-        id: `fee_${partnerId}_init`,
-        partner_id: partnerId,
-        portfolio_id: portfolioId,
-        transaction_id: feeTxn.id,
-        fee_type: 'INITIAL',
-        period_month: 'INITIAL',
-        portfolio_value_at_calc: capital,
-        fee_percentage: partnerFeeRate,
-        fee_amount: initialFeeAmount,
-        status: 'collected',
-        calculation_date: dateStr,
-        collection_date: dateStr,
-        notes: `أتعاب بداية الاستثمار ${partnerFeeRate}%`,
-        created_by: user.id,
-        created_at: now,
-      };
-      db.management_fees.unshift(initialFeeRecord);
-      saveDatabase(db);
-    }
 
     // Recalculate
     recalculatePortfolio(partnerId);
@@ -238,7 +201,7 @@ export async function POST(req: NextRequest) {
       user_id: user.id,
       partner_id: partnerId,
       title: 'تم تسجيل شريك جديد بنجاح',
-      message: `تم إنشاء محفظة الشريك ${full_name} برأس مال ${capital} ج.م وبنسبة أتعاب ${partnerFeeRate}%.`,
+      message: `تم إنشاء محفظة الشريك ${full_name} برأس مال ${capital} ج.م وبنسبة أتعاب شهرية ${partnerFeeRate}%.`,
       type: 'SUCCESS',
       is_read: 0,
       created_at: now,

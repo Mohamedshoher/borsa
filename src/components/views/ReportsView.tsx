@@ -121,7 +121,7 @@ export default function ReportsView() {
 
   const reportTabs = [
     { id: 'partners', label: 'تقرير الشركاء والمحافظ', icon: Users },
-    { id: 'fees', label: 'تقرير أتعاب الإدارة (2%)', icon: Percent },
+    { id: 'fees', label: 'تقرير أتعاب الإدارة', icon: Percent },
     { id: 'deposits', label: 'تقرير الإيداعات', icon: Coins },
     { id: 'withdrawals', label: 'تقرير السحوبات', icon: Coins },
   ];
@@ -299,7 +299,7 @@ export default function ReportsView() {
                       <th className="p-3 border-l border-slate-300">نوع الاستحقاق</th>
                       <th className="p-3 border-l border-slate-300">الشهر</th>
                       <th className="p-3 border-l border-slate-300">التقييم وقت الاحتساب</th>
-                      <th className="p-3 border-l border-slate-300">قيمة الأتعاب (2%)</th>
+                      <th className="p-3 border-l border-slate-300">قيمة الأتعاب</th>
                       <th className="p-3 border-l border-slate-300">الحالة</th>
                       <th className="p-3">تاريخ الاستحقاق</th>
                     </tr>

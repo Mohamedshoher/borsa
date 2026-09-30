@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb, saveDatabase } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
-import { recordTransaction, recalculatePortfolio } from '@/lib/financial';
+import { recordTransaction, recalculatePortfolio, redeemFromFund, getNav, round2 } from '@/lib/financial';
 import { recordAuditLog } from '@/lib/audit';
 import { WithdrawalRequest, Withdrawal } from '@/lib/types';
 
@@ -225,8 +225,9 @@ export async function PUT(req: NextRequest) {
     db.withdrawal_requests[reqIndex].reviewed_at = nowIso;
 
     // Create Transaction
-    const balanceBefore = portfolio.current_valuation;
-    const balanceAfter = Math.max(0, balanceBefore - finalAmount);
+    const balanceBefore = round2((portfolio.units || 0) * getNav(db));
+    const balanceAfter = Math.max(0, round2(balanceBefore - finalAmount));
+    const { units } = redeemFromFund(db, partner.id, finalAmount);
 
     const txn = recordTransaction({
       partnerId: partner.id,
@@ -238,6 +239,7 @@ export async function PUT(req: NextRequest) {
       balanceBefore,
       balanceAfter,
       createdById: user.id,
+      units: -units,
       paymentMethod: payment_method || 'تحويل بنكي معتمد',
       referenceNo: reference_no,
       notes: `سحب معتمد لطلب رقم (${request.id}) - ${admin_notes || ''}`,

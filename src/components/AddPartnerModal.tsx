@@ -23,14 +23,14 @@ export default function AddPartnerModal({ isOpen, onClose }: AddPartnerModalProp
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [notes, setNotes] = useState('');
-  const [calcInitialFee, setCalcInitialFee] = useState(true);
-  const [feeRate, setFeeRate] = useState(systemSettings?.default_mgmt_fee_rate || 2.0);
+  const [investNow, setInvestNow] = useState(true);
+  const [feeRate, setFeeRate] = useState(systemSettings?.default_mgmt_fee_rate ?? 1.0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
 
   const parsedCapital = parseFloat(initialCapital) || 0;
-  const initialFeePreview = calcInitialFee ? Math.round(parsedCapital * (feeRate / 100) * 100) / 100 : 0;
+  const monthlyFeePreview = Math.round(parsedCapital * (feeRate / 100) * 100) / 100;
 
   const handleNameChange = (val: string) => {
     setFullName(val);
@@ -65,9 +65,8 @@ export default function AddPartnerModal({ isOpen, onClose }: AddPartnerModalProp
           username: username.trim().toLowerCase(),
           password: password.trim(),
           notes: notes.trim() || null,
-          calculate_initial_fee: calcInitialFee,
           management_fee_rate: feeRate,
-          initial_fee_rate: feeRate,
+          invest_now: investNow,
         }),
       });
 
@@ -216,7 +215,7 @@ export default function AddPartnerModal({ isOpen, onClose }: AddPartnerModalProp
                   <Percent className="w-4 h-4 absolute left-3 top-3 text-purple-600" />
                 </div>
                 <span className="text-[10px] text-slate-400 mt-0.5 block">
-                  الافتراضية: 2% (يمكنك تعديلها بحرية لهذا الشريك)
+                  الافتراضية: 1% شهرياً (يمكنك تعديلها بحرية لهذا الشريك)
                 </span>
               </div>
 
@@ -264,24 +263,21 @@ export default function AddPartnerModal({ isOpen, onClose }: AddPartnerModalProp
               </div>
             </div>
 
-            {/* Initial Management Fee Calculator Box */}
+            {/* Shared-portfolio explanation */}
             <div className="p-4 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 space-y-2">
-              <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-emerald-900 dark:text-emerald-200">
-                  <input
-                    type="checkbox"
-                    checked={calcInitialFee}
-                    onChange={(e) => setCalcInitialFee(e.target.checked)}
-                    className="rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4"
-                  />
-                  <span>احتساب أتعاب بداية الاستثمار ({feeRate}%) تلقائياً</span>
-                </label>
-                <span className="text-sm font-extrabold text-emerald-700 dark:text-emerald-300 font-financial">
-                  {formatCurrency(initialFeePreview)}
-                </span>
-              </div>
+              <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-emerald-900 dark:text-emerald-200">
+                <input
+                  type="checkbox"
+                  checked={investNow}
+                  onChange={(e) => setInvestNow(e.target.checked)}
+                  className="rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4"
+                />
+                <span>استثمار المبلغ فوراً (يدخل ضمن الأموال الشغّالة)</span>
+              </label>
               <p className="text-[11px] text-emerald-700/80 dark:text-emerald-400/80 leading-relaxed">
-                وفق نسبة هذا الشريك ({feeRate}%): تُستحق أتعاب بداية استثمار بمبلغ {formatCurrency(initialFeePreview)} ({formatCurrency(parsedCapital)} × {feeRate}%).
+                المبلغ يدخل المحفظة المشتركة ويحصل الشريك على نسبة منها بسعر الحصة الحالي، ولا تتأثر قيمة حصص باقي الشركاء.
+                تُخصم الأتعاب شهرياً ({feeRate}% ≈ {formatCurrency(monthlyFeePreview)} على رأس المال الحالي) وتُضاف تلقائياً لرأس مال المدير.
+                إن لم يُستثمر المبلغ فيبقى سيولة لا تتأثر بالربح والخسارة.
               </p>
             </div>
           </div>

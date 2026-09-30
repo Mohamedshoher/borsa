@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
-import { recordTransaction, recalculatePortfolio } from '@/lib/financial';
+import { recordTransaction, recalculatePortfolio, contributeToFund, redeemFromFund, getNav, round2 } from '@/lib/financial';
 import { recordAuditLog } from '@/lib/audit';
 
 export async function GET(req: NextRequest) {
@@ -94,8 +94,17 @@ export async function POST(req: NextRequest) {
     const dateStr = date || new Date().toISOString().split('T')[0];
     const timeStr = time || new Date().toTimeString().split(' ')[0].substring(0, 5);
 
-    const balanceBefore = portfolio.current_valuation;
-    const balanceAfter = Math.max(0, balanceBefore + numAmount);
+    // A settlement changes the partner's real holding: positive adds units, negative removes them
+    const balanceBefore = round2((portfolio.units || 0) * getNav(db));
+    const balanceAfter = Math.max(0, round2(balanceBefore + numAmount));
+    let settledUnits: number;
+    try {
+      settledUnits = numAmount > 0
+        ? contributeToFund(db, partner_id, numAmount).units
+        : -redeemFromFund(db, partner_id, -numAmount).units;
+    } catch (e: any) {
+      return NextResponse.json({ error: e.message }, { status: 400 });
+    }
 
     const txn = recordTransaction({
       partnerId: partner_id,
@@ -107,6 +116,7 @@ export async function POST(req: NextRequest) {
       balanceBefore,
       balanceAfter,
       createdById: user.id,
+      units: settledUnits,
       paymentMethod: payment_method || 'تسوية محاسبية',
       notes,
     });

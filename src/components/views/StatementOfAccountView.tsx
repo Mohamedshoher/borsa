@@ -243,7 +243,7 @@ export default function StatementOfAccountView() {
           </div>
 
           <div className="p-3.5 rounded-xl border border-slate-200 bg-white">
-            <span className="text-[11px] text-slate-500 block mb-1">إجمالي أتعاب الإدارة (2%)</span>
+            <span className="text-[11px] text-slate-500 block mb-1">إجمالي أتعاب الإدارة</span>
             <span className="text-base font-extrabold text-purple-700 font-financial">
               {formatCurrency(pf?.total_fees_incurred)}
             </span>

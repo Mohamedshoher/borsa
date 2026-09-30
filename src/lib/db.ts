@@ -13,6 +13,7 @@ import {
   AuditLog,
   Notification,
   SystemSettings,
+  Fund,
 } from './types';
 
 export interface DatabaseSchema {
@@ -28,6 +29,7 @@ export interface DatabaseSchema {
   audit_logs: AuditLog[];
   notifications: Notification[];
   system_settings: SystemSettings;
+  fund: Fund;
 }
 
 const DB_DIR = path.join(process.cwd(), 'data');
@@ -89,6 +91,8 @@ export function loadDatabase(): DatabaseSchema {
             }
           });
 
+          migrateToFund(parsed);
+
           cachedDb = parsed;
           lastMtime = stats.mtimeMs;
           return cachedDb as DatabaseSchema;
@@ -101,6 +105,7 @@ export function loadDatabase(): DatabaseSchema {
 
   // Initialize fresh database with seed
   cachedDb = createInitialDatabase();
+  migrateToFund(cachedDb);
   saveDatabase(cachedDb);
   return cachedDb;
 }
@@ -121,6 +126,80 @@ export function saveDatabase(db: DatabaseSchema): void {
   }
 }
 
+/**
+ * Upgrades older databases (one isolated portfolio per partner) to the pooled-fund
+ * model: every partner holds units of one shared fund. Idempotent.
+ */
+export function migrateToFund(db: DatabaseSchema): void {
+  if (!db.fund) {
+    // NAV starts at 1.0, so each partner's units equal their current value.
+    // Everything is assumed to be already working (invested), as in the old model.
+    let totalUnits = 0;
+    for (const pf of db.portfolios) {
+      pf.units = Math.round((pf.current_valuation || 0) * 1e6) / 1e6;
+      totalUnits += pf.units;
+    }
+    db.fund = {
+      total_units: Math.round(totalUnits * 1e6) / 1e6,
+      invested_value: Math.round(totalUnits * 100) / 100,
+      idle_cash: 0,
+      last_valuation_date: new Date().toISOString().split('T')[0],
+    };
+  }
+
+  for (const pf of db.portfolios) {
+    if (pf.units === undefined) pf.units = 0;
+  }
+
+  // The manager needs an account of their own to receive the monthly fees
+  if (!db.partners.some((p) => p.is_manager)) {
+    const now = new Date().toISOString();
+    const partnerId = 'prt_manager_00';
+    db.partners.unshift({
+      id: partnerId,
+      full_name: db.system_settings?.manager_name || 'مدير الاستثمار',
+      phone: '-',
+      email: null,
+      join_date: now.split('T')[0],
+      join_time: '00:00',
+      management_fee_rate: 0,
+      is_manager: true,
+      status: 'active',
+      notes: 'حساب المدير - يستقبل أتعاب الإدارة الشهرية تلقائياً كحصص',
+      user_id: null,
+      created_at: now,
+    });
+    db.portfolios.unshift({
+      id: `port_${partnerId}`,
+      partner_id: partnerId,
+      initial_capital: 0,
+      total_deposits: 0,
+      total_withdrawals: 0,
+      total_profits: 0,
+      total_losses: 0,
+      current_valuation: 0,
+      total_fees_incurred: 0,
+      fees_paid: 0,
+      fees_due: 0,
+      net_value: 0,
+      units: 0,
+      last_valuation_date: now.split('T')[0],
+      updated_at: now,
+    });
+  }
+
+  // Refresh derived per-partner numbers
+  const nav = db.fund.total_units > 0 ? (db.fund.invested_value + db.fund.idle_cash) / db.fund.total_units : 1;
+  for (const pf of db.portfolios) {
+    const units = pf.units || 0;
+    pf.current_valuation = Math.round(units * nav * 100) / 100;
+    pf.net_value = pf.current_valuation;
+    pf.ownership_pct = db.fund.total_units > 0 ? (units / db.fund.total_units) * 100 : 0;
+    pf.invested_value = Math.round((pf.ownership_pct / 100) * db.fund.invested_value * 100) / 100;
+    pf.idle_value = Math.round((pf.ownership_pct / 100) * db.fund.idle_cash * 100) / 100;
+  }
+}
+
 export function getDb(): DatabaseSchema {
   return loadDatabase();
 }
@@ -131,7 +210,7 @@ function createDefaultSettings(): SystemSettings {
     manager_name: 'مدير الاستثمار',
     currency: 'EGP',
     currency_symbol: 'ج.م',
-    default_mgmt_fee_rate: 2.0,
+    default_mgmt_fee_rate: 1.0,
     mgmt_fee_basis: 'VALUATION',
     accounting_month_start_day: 1,
     notifications_enabled: true,
@@ -682,5 +761,6 @@ function createInitialDatabase(): DatabaseSchema {
       },
     ],
     system_settings: settings,
+    fund: undefined as unknown as Fund, // filled in by migrateToFund
   };
 }

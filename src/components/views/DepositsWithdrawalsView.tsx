@@ -33,6 +33,7 @@ export default function DepositsWithdrawalsView() {
   const [paymentMethod, setPaymentMethod] = useState('تحويل بنكي');
   const [referenceNo, setReferenceNo] = useState('');
   const [notes, setNotes] = useState('');
+  const [investNow, setInvestNow] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchData = async () => {
@@ -94,6 +95,7 @@ export default function DepositsWithdrawalsView() {
       if (activeTab === 'deposits') {
         body.deposit_date = date;
         body.deposit_time = time;
+        body.invest_now = investNow;
       } else {
         body.withdrawal_date = date;
         body.withdrawal_time = time;
@@ -260,6 +262,18 @@ export default function DepositsWithdrawalsView() {
                 className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               />
             </div>
+
+            {activeTab === 'deposits' && (
+              <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer self-end pb-2.5">
+                <input
+                  type="checkbox"
+                  checked={investNow}
+                  onChange={(e) => setInvestNow(e.target.checked)}
+                  className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4"
+                />
+                <span>استثمار المبلغ فوراً (وإلا يبقى سيولة لا تتأثر بالربح والخسارة)</span>
+              </label>
+            )}
 
             <div className="flex items-end">
               <button

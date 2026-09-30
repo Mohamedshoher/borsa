@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb, saveDatabase } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
-import { recordTransaction, recalculatePortfolio } from '@/lib/financial';
+import { recordTransaction, recalculatePortfolio, redeemFromFund, getNav, round2 } from '@/lib/financial';
 import { recordAuditLog } from '@/lib/audit';
 import { Withdrawal } from '@/lib/types';
 
@@ -72,8 +72,9 @@ export async function POST(req: NextRequest) {
     const timeStr = withdrawal_time || new Date().toTimeString().split(' ')[0].substring(0, 5);
     const now = new Date().toISOString();
 
-    const balanceBefore = portfolio.current_valuation;
-    const balanceAfter = Math.max(0, balanceBefore - numAmount);
+    const balanceBefore = round2((portfolio.units || 0) * getNav(db));
+    const balanceAfter = Math.max(0, round2(balanceBefore - numAmount));
+    const { units } = redeemFromFund(db, partner_id, numAmount);
 
     // 1. Record Transaction
     const txn = recordTransaction({
@@ -86,6 +87,7 @@ export async function POST(req: NextRequest) {
       balanceBefore,
       balanceAfter,
       createdById: user.id,
+      units: -units,
       paymentMethod: payment_method,
       referenceNo: reference_no,
       notes: notes || 'عملية سحب من المحفظة',
